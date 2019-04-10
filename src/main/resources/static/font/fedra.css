@@ -1,0 +1,49 @@
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/wf/web_fonts.php on line 81
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/wf/web_fonts.php on line 16
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/wf/web_fonts.php on line 32
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/wf/web_fonts.php on line 48
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/includes/classes/webfonts/web_fonts.class.php on line 441
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/includes/classes/webfonts/web_fonts.class.php on line 441
+
+Warning: get_browser(): browscap ini directive not set in /home/www/typothequen/new.typotheque.com/includes/classes/webfonts/web_fonts.class.php on line 441
+/*
+* Webfonts served by Typotheque.com
+*
+* To make the font files as small as possible,
+* most glyphs and OpenType features were removed.
+* To edit the fonts, add more language support,
+* log it to your Typotheque account:
+* http://www.typotheque.com/my_account/webfonts
+*
+* The Typotheque Font Software is protected under domestic
+* and international trademark and copyright law.
+* Modifying, reverse engineering or otherwise copying
+* of Typotheque Font Software is illegal.
+* http://www.typotheque.com/licensing/
+*
+* (c) 2012, Typotheque
+*/
+
+@font-face{
+    font-family:"Fedra Sans Light";
+    src:url("http://wf.typotheque.com/wf/get_font.php?key=428924b807d14d841499534a10db27ee") format("truetype");
+font-style: normal;
+font-weight: normal;
+font-stretch: normal;}
+@font-face{
+    font-family:"Fedra Sans Screen Regular";
+    src:url("http://wf.typotheque.com/wf/get_font.php?key=a7e92d489b245ceaefd9e9b8953d75f9") format("truetype");
+font-style: normal;
+font-weight: normal;
+font-stretch: normal;}
+@font-face{
+    font-family:"Fedra Sans Screen Bold";
+    src:url("http://wf.typotheque.com/wf/get_font.php?key=5f503f462dd3a9e0ce57340e34325b83") format("truetype");
+font-style: normal;
+font-weight: normal;
+font-stretch: normal;}

@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Coronation - Login</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="icon" href="https://www.coronationmb.com/favicon.ico" type="image/x-icon">
+<!-- VENDOR CSS -->
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{css/font-awesome.min.css}">
+
+<!-- MAIN CSS -->
+<link rel="stylesheet" th:href="@{css/main.css}">
+<link rel="stylesheet" th:href="@{css/color_skins.css}">
+  <style type="text/css">
+        @font-face {
+        font-family: FedraSansStdLight;
+        src: url(font/FedraSansStd-LightLF.otf);
+    }
+    
+    html,
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p
+{
+        
+        font-family: inherit;
+        font-weight: 400;
+        line-height: 1.71429;
+        
+    }
+
+    body {
+        background: #fff;
+        font-size: 13px;
+        font-family: 'FedraSansStdLight';
+        font-weight: normal;
+        color: #003057;
+        height: 100%;
+        
+    }
+    </style>
+</head>
+
+<body class="theme-orange">
+	<!-- WRAPPER -->
+	<div id="wrapper" >
+		<div class="vertical-align-wrap" >
+			<div class="vertical-align-middle auth-main" >
+				<div class="auth-box" >
+                    <div class="" >
+                       
+                    </div>
+					<div class="card" >
+                        <div class="header align-center m-t-0"  >
+                             <img src="https://www.coronationmb.com/img/CMB_logo.svg" alt="Lucid" style="width: 200px"><br><br>
+                            <p class="lead">Login to your account</p>
+                        </div>
+                        <div class="body" >
+                            <form class="form-auth-small" th:action="@{/processlogin}" th:object="${user}" th:method="POST">
+                                <div class="form-group">
+                                    <label for="signin-email" class="control-label sr-only">Email</label>
+                                    <input type="email" class="form-control" id="signin-email" value="user@domain.com" placeholder="Email" th:field="*{userName}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="signin-password" class="control-label sr-only">Password</label>
+                                    <input type="password" class="form-control" id="signin-password" value="thisisthepassword" placeholder="Password" th:field="*{password}">
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="fancy-checkbox element-left">
+                                        <input type="checkbox">
+                                        <span>Remember me</span>
+                                    </label>								
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">LOGIN</button>
+                                <div class="bottom">
+                                    <span class="helper-text m-b-10"><i class="fa fa-lock"></i> <a href="#">Forgot password?</a></span>
+                                    <span>Don't have an account? <a href="register.html">Register</a></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END WRAPPER -->
+</body>
+</html>

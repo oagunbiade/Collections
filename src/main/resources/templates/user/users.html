@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Collections</title>
+
+    <th:block th:include="fragments/headerinc :: head"></th:block> 
+</head>
+<body>
+<div class="container">
+   <th:block th:include="fragments/header :: header"></th:block>
+    <div th:if="${not #lists.isEmpty(organizationUsers)}">
+        <h2>Product List</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>User Id</th>
+                <th>User Name</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>View</th>
+                <th>Edit</th>
+            </tr>
+            <tr th:each="user : ${organizationUsers}">
+                <td th:text="${user.UserId}"><a href="/user/${user.userId}">Id</a></td>
+                <td th:text="${user.userName}">User Name</td>
+                <td th:text="${user.createdBy}">Created By</td>
+                <td th:text="${user.createdDate}">Date Created</td>
+                <td><a th:href="${ '/user/' + user.userId}">View</a></td>
+                <td><a th:href="${'/user/edit/' + user.userId}">Edit</a></td> 
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

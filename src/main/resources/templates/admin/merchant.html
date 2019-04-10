@@ -1,0 +1,943 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Coronation :: Home</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="icon" href="https://www.coronationmb.com/favicon.ico"
+	type="image/x-icon">
+<!-- VENDOR CSS -->
+<link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+	th:href="@{../css/bootstrap.min.css}">
+<link href="../../../static/css/font-awesome.min.css" rel="stylesheet"
+	th:href="@{../css/font-awesome.min.css}">
+
+<link href="../../../static/css/chartist.min.css" rel="stylesheet"
+	th:href="@{../css/chartist.min.css}">
+<link href="../../../static/css/chartist-plugin-tooltip.css"
+	rel="stylesheet" th:href="@{../css/chartist-plugin-tooltip.css}">
+
+
+<!-- MAIN CSS -->
+<link href="../../../static/css/main.css" rel="stylesheet"
+	th:href="@{../css/main.css}">
+<link href="../../../static/css/color_skins.css" rel="stylesheet"
+	th:href="@{../css/color_skins.css}">
+<style type="text/css">
+@font-face {
+	font-family: FedraSansStdLight;
+	src: url(../font/FedraSansStd-LightLF.otf);
+}
+
+html, body, h1, h2, h3, h4, h5, h6, p {
+	font-family: inherit;
+	font-weight: 400;
+	line-height: 1.71429;
+}
+
+body {
+	background: #fff;
+	font-size: 13px;
+	font-family: 'FedraSansStdLight';
+	font-weight: normal;
+	color: #003057;
+	height: 100%;
+}
+</style>
+</head>
+<body class="theme-orange">
+
+	<!-- Page Loader -->
+	<!-- <div class="page-loader-wrapper">
+    <div class="loader">
+        <div class="m-t-30"><img src="images/logo-icon.svg" width="48" height="48" alt="Lucid"></div>
+        <p>Please wait...</p>        
+    </div>
+</div> -->
+	<!-- Overlay For Sidebars -->
+
+	<div id="wrapper">
+
+
+		<nav class="navbar navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-btn">
+					<button type="button" class="btn-toggle-offcanvas">
+						<i class="lnr lnr-menu fa fa-bars"></i>
+					</button>
+				</div>
+
+				<div class="navbar-brand">
+					<!-- <a href="index.html"><img src="images/logo.png" alt="Lucid Logo" class="img-responsive logo"></a>  -->
+				</div>
+
+				<div class="navbar-right">
+
+					<div id="navbar-menu">
+						<ul class="nav navbar-nav dropdown">
+
+							<!--                        <a th:href="@{/}"><img th:src="@{images/logo.png}" style="width: 150px;" alt="Lucid Logo" class="img-responsive logo"></a>                         -->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div id="left-sidebar" class="sidebar">
+			<div class="sidebar-scroll">
+				<div class="user-account">
+					<div class="dropdown">
+						<span>Welcome,</span> <a th:href="@{javascript:void(0);}"
+							class="dropdown-toggle user-name" data-toggle="dropdown"><strong
+							th:text="${user.userProfile.firstName}"></strong></a>
+						<ul
+							class="dropdown-menu dropdown-menu-right account animated flipInY">
+							<li><a th:href="@{/}"><i class="icon-power"></i>Logout</a></li>
+						</ul>
+					</div>
+					<hr>
+				</div>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs">
+					<li class="nav-item"><a class="nav-link active"
+						data-toggle="tab" href="#hr_menu">Home</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content p-l-0 p-r-0">
+					<div class="tab-pane animated fadeIn active" id="hr_menu">
+						<nav class="sidebar-nav">
+							<ul class="main-menu metismenu">
+								<!--  <li class="active"><a href="index.html"><i class="icon-speedometer"></i><span>Dashboard</span></a></li> -->
+								<li class="active"><a href="#App" class="has-arrow"><i
+										class="icon-speedometer"></i> <span>Profile</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#viewProfileModal">View Profile</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Manage Profile</a></li>
+									</ul></li>
+
+								
+							
+
+								<li><a href="#App" class="has-arrow"><i
+										class="icon-grid"></i> <span>Product</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#createProdModal">Create Product</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#listProdModal">Manage Products</a></li>
+									</ul></li>
+								<li><a href="#App" class="has-arrow"><i
+										class="icon-grid"></i> <span>Payment</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#makePaymentModal">Make Payment</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#uploadPaymentModal">Upload Payments</a></li>
+											<li><a href="#largeModal" data-toggle="modal"
+											data-target="#listPaymentModal">Manage Payments</a></li>
+									</ul></li>
+								<!-- 
+                            <li><a href="table.html"><i class="icon-calendar"></i>Table</a></li>
+                            <li><a href="login.html"><i class="icon-badge"></i>Login</a></li>
+                            <li><a href="form.html"><i class="icon-globe"></i>Form</a></li>
+                            <li><a href="blank.html"><i class="icon-globe"></i>Blank</a></li>
+                         -->
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="main-content">
+			<div class="container-fluid">
+				<div class="block-header">
+					<div class="row">
+						<div class="col-lg-6 col-md-8 col-sm-12">
+							<h2>
+								<a th:href="@{javascript:void(0);}"
+									class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+									class="fa fa-arrow-left"></i></a> Collections
+							</h2>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="index.html"><i
+										class="icon-home"></i></a></li>
+								<li class="breadcrumb-item active"></li>
+							</ul>
+						</div>
+						<div class="col-lg-6 col-md-4 col-sm-12 text-right">
+							<div class="bh_chart hidden-xs">
+								<div class="float-left m-r-15">
+									<small>Visitors</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-user"></i> 1,784
+									</h6>
+								</div>
+								<span class="bh_visitors float-right">2,5,1,8,3,6,7,5</span>
+							</div>
+							<div class="bh_chart hidden-sm">
+								<div class="float-left m-r-15">
+									<small>Visits</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-globe"></i> 325
+									</h6>
+								</div>
+								<span class="bh_visits float-right">10,8,9,3,5,8,5</span>
+							</div>
+							<div class="bh_chart hidden-sm">
+								<div class="float-left m-r-15">
+									<small>Chats</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-bubbles"></i> 13
+									</h6>
+								</div>
+								<span class="bh_chats float-right">1,8,5,6,2,4,3,2</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row clearfix">
+					<div class="col-lg-3 col-md-6">
+						<div class="card top_counter">
+							<div class="body">
+								<div class="icon">
+									<i class="fa fa-user"></i>
+								</div>
+								<div class="content">
+									<div class="text">New Employee</div>
+									<h5 class="number">22</h5>
+								</div>
+								<hr>
+								<div class="icon">
+									<i class="fa fa-organizationUsers"></i>
+								</div>
+								<div class="content">
+									<div class="text">Total Employee</div>
+									<h5 class="number">425</h5>
+								</div>
+							</div>
+						</div>
+						<div class="card top_counter">
+							<div class="body">
+								<div class="icon">
+									<i class="fa fa-university"></i>
+								</div>
+								<div class="content">
+									<div class="text">Total Salary</div>
+									<h5 class="number">$2.8M</h5>
+								</div>
+								<hr>
+								<div class="icon">
+									<i class="fa fa-university"></i>
+								</div>
+								<div class="content">
+									<div class="text">Avg. Salary</div>
+									<h5 class="number">$1,250</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<div class="card text-center">
+							<div class="body">
+								<h5>Income Analysis</h5>
+								<span>8% High then last month</span>
+								<div class="sparkline-pie m-t-20">6,4,8</div>
+								<div class="stats-report m-b-30">
+									<div class="stat-item">
+										<h5>Design</h5>
+										<b class="col-black">84.60%</b>
+									</div>
+									<div class="stat-item">
+										<h5>Dev</h5>
+										<b class="col-black">15.40%</b>
+									</div>
+									<div class="stat-item">
+										<h5>SEO</h5>
+										<b class="col-black">5.10%</b>
+									</div>
+								</div>
+								<span id="sparkline-compositeline">8,4,0,0,0,0,1,4,4,10,10,10,10,0,0,0,4,6,5,9,10</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-md-12">
+						<div class="card">
+							<div class="header">
+								<h2>Salary Statistics</h2>
+								<ul class="header-dropdown">
+									<li><a class="tab_btn" th:href="@{javascript:void(0);}"
+										data-toggle="tooltip" data-placement="top" title="Weekly">W</a></li>
+									<li><a class="tab_btn" th:href="@{javascript:void(0);}"
+										data-toggle="tooltip" data-placement="top" title="Monthly">M</a></li>
+									<li><a class="tab_btn active"
+										th:href="@{javascript:void(0);}" data-toggle="tooltip"
+										data-placement="top" title="Yearly">Y</a></li>
+									<li class="dropdown"><a href="javascript:void(0);"
+										class="dropdown-toggle" data-toggle="dropdown" role="button"
+										aria-haspopup="true" aria-expanded="false"></a>
+										<ul
+											class="dropdown-menu dropdown-menu-right animated bounceIn">
+											<li><a th:href="@{javascript:void(0);}">Action</a></li>
+											<li><a th:href="@{javascript:void(0);}">Another
+													Action</a></li>
+											<li><a th:href="@{javascript:void(0);}">Something
+													else</a></li>
+										</ul></li>
+								</ul>
+							</div>
+							<div class="body">
+								<div id="Salary_Statistics" class="chartist"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Modal Views  -->
+
+	<!-- Create Orgaznition Modal Form  -->
+	<div class="modal fade" id="createOrgModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Create Organization</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${organization}"
+						th:action="@{'/organization/' + ${user.userId} +'/save'}" method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input type="hidden" th:field="*{organizationId}" />
+								<div class="form-group">
+									<label>Organization Name</label> <input type="text"
+										class="form-control" th:field="*{name}">
+								</div>
+
+							</div>
+
+							<br>
+
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Create Orgaznition Modal Form  -->
+	<div class="modal fade" id="createUserTypeModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Create User Type</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${usertype}"
+						th:action="@{'/usertype/' + ${user.userId} +'/save'}"
+						method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input type="hidden" th:field="*{userTypeId}" />
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Type:</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" th:field="*{type}" />
+									</div>
+								</div>
+
+							</div>
+
+							<br>
+
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="createProdModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Create Product</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${product}"
+						th:action="@{'/product/' + ${user.userId} +'/save'}" method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input type="hidden" th:field="*{productId}" />
+								<div class="form-group">
+									<label>Product Name</label> <input type="text"
+										class="form-control" th:field="*{productName}">
+								</div>
+								<div class="form-group">
+									<label>Product Code</label> <input type="text"
+										class="form-control" th:field="*{productCode}">
+								</div>
+								<div class="form-group">
+									<label>Cost</label> <input type="text" class="form-control"
+										th:field="*{cost}">
+								</div>
+
+							</div>
+
+							<br>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Merchant</label> <select th:field="*{merchant}"
+										class="form-control">
+										<option value="0">Select..</option>
+										<option th:each="merchant : ${merchants}"
+											th:value="${merchant.merchantId}"
+											th:text="${merchant.merchantName}"></option>
+									</select> <span class="text-danger"
+										th:if="${#fields.hasErrors('merchant')}"
+										th:errors="*{merchant}"></span>
+								</div>
+								<div class="form-group">
+									<label>measurement</label> <input type="text"
+										class="form-control" th:field="*{measurement}">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="createMerchantModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Create Merchant</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${merchant}"
+						th:action="@{'/merchant/' + ${user.userId} +'/save'}"
+						method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input type="hidden" th:field="*{merchantId}" />
+								<div class="form-group">
+									<label>Merchant Name</label> <input type="text"
+										class="form-control" th:field="*{merchantName}">
+								</div>
+								<div class="form-group">
+									<label>Merchant Code</label> <input type="text"
+										class="form-control" th:field="*{merchantCode}">
+								</div>
+								<div class="form-group">
+									<label>Account Number</label> <input type="text"
+										class="form-control" th:field="*{accountNumber}">
+								</div>
+								<div class="form-group">
+									<label>Organization</label> <select th:field="*{organization}"
+										class="form-control">
+										<option value="0">Select..</option>
+										<option th:each="organization : ${organizations}"
+											th:value="${organization.organizationId}"
+											th:text="${organization.name}"></option>
+									</select> <span class="text-danger"
+										th:if="${#fields.hasErrors('organization')}"
+										th:errors="*{organization}"></span>
+								</div>
+							</div>
+
+							<br>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Bank Name</label> <input type="text"
+										class="form-control" th:field="*{bankName}">
+								</div>
+								<div class="form-group">
+									<label>Bank Code</label> <input type="text"
+										class="form-control" th:field="*{bankCode}">
+								</div>
+								<div class="form-group">
+									<label>Email</label> <input type="text" class="form-control"
+										th:field="*{email}">
+								</div>
+								<div class="form-group">
+									<label>Phone</label> <input type="text" class="form-control"
+										th:field="*{phone}">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="makePaymentModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Make Payment</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${payment}"
+						th:action="@{'/payment/' + ${user.userId} +'/save'}" method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input type="hidden" th:field="*{paymentId}" />
+
+								<div class="form-group">
+									<label>Merchant</label> <select th:field="*{merchant}"
+										id="merchant" class="form-control">
+										<option value="0">Select..</option>
+										<option th:each="merchant : ${merchants}"
+											th:value="${merchant.merchantId}"
+											th:text="${merchant.merchantName}"></option>
+									</select> <span class="text-danger"
+										th:if="${#fields.hasErrors('merchant')}"
+										th:errors="*{merchant}"></span>
+								</div>
+
+								<div class="form-group">
+									<label>Product</label> <select th:field="*{product}"
+										id="product" class="form-control">
+										<option value="0">Select..</option>
+										<option th:each="product : ${products}"
+											th:value="${product.productId}"
+											th:text="${product.productName}"></option>
+									</select> <span class="text-danger"
+										th:if="${#fields.hasErrors('product')}" th:errors="*{product}"></span>
+								</div>
+
+
+								<div class="form-group">
+									<label>Debit Account</label> <input type="text"
+										class="form-control" th:field="*{debitAccount}">
+								</div>
+								<div class="form-group">
+									<label>Debit Bank Name</label> <input type="text"
+										class="form-control" th:field="*{debitBankName}">
+								</div>
+								<div class="form-group">
+									<label>Debit Bank Code</label> <input type="text"
+										class="form-control" th:field="*{debitBankCode}">
+								</div>
+
+
+							</div>
+
+							<br>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Beneficiary Bank Account</label> <input type="text"
+										class="form-control" th:field="*{creditAccount}">
+								</div>
+								<div class="form-group">
+									<label>Beneficiary Bank Name</label> <input type="text"
+										class="form-control" th:field="*{creditBankName}">
+								</div>
+								<div class="form-group">
+									<label>Beneficiary Bank Code</label> <input type="text"
+										class="form-control" th:field="*{creditBankCode}">
+								</div>
+
+								<div class="form-group">
+									<label>Reference </label> <input type="text"
+										class="form-control" th:field="*{reference}">
+								</div>
+
+								<div class="form-group">
+									<label>Amount</label> <input type="text" class="form-control"
+										th:field="*{amount}">
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="uploadPaymentModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Upload Payment</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" th:object="${payment}"
+						th:action="@{'/payment/' + ${user.userId}+'/doUpload'}"
+						method="POST" enctype="multipart/form-data">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Batch Upload</label> <input type="file" name="file"
+										class="form-control">
+								</div>
+
+
+							</div>
+
+							<br>
+							<div class="col-md-6"></div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">SUBMIT</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- List Product Modal  -->
+	<div class="modal fade" id="listProdModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Product List</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="table-responsive">
+						<table
+							class="table table-hover js-basic-example dataTable table-custom">
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>Product Name</th>
+									<th>Product Code</th>
+									<th>Cost</th>
+									<th>Created By</th>
+									<th>Status</th>
+									<th>View</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="product : ${products}">
+									<td th:text="${product.productId}"><a
+										th:href="/product/${product.productId}">Id</a></td>
+									<td th:text="${product.productName}">Name</td>
+									<td th:text="${product.productCode}">Code</td>
+									<td th:text="${product.cost}">Cost</td>
+									<td th:text="${product.createdBy}">Created By</td>
+									<td th:text="${product.status}">Status</td>
+									<td><a th:href="${'/product/' + product.productId}">View</a></td>
+									<td><a th:href="${'/product/edit/' + product.productId}">Edit</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	
+	<!-- List Product Modal  -->
+	<div class="modal fade" id="listMerchantModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Merchant List</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="table-responsive">
+						<table
+							class="table table-hover js-basic-example dataTable table-custom">
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>Merchantt Name</th>
+									<th>Merchant Code</th>
+									<th>Account</th>
+									<th>Bank Name</th>
+									<th>email</th>
+									<th>View</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="merchant : ${merchants}">
+									<td th:text="${merchant.merchantId}"><a
+										th:href="'/merchant/'+ ${merchant.merchantId}">Id</a></td>
+									<td th:text="${merchant.merchantName}">Name</td>
+									<td th:text="${merchant.merchantCode}">Code</td>
+									<td th:text="${merchant.accountNumber}">Account</td>
+									<td th:text="${merchant.bankName}">Bank</td>
+									<td th:text="${merchant.email}">Email</td>
+									<td><a th:href="${'/merchant/' + merchant.merchantId}">View</a></td>
+									<td><a th:href="${'/merchant/edit/' + merchant.merchantId}">Edit</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- List Orgaznition Modal Form  -->
+	<div class="modal fade" id="listOrgModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Organization List</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="table-responsive">
+						<table
+							class="table table-hover js-basic-example dataTable table-custom">
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>Organization Name</th>
+									<th>Date Created</th>
+									<th>Created By</th>
+									<th>View</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="organization : ${organizations}">
+									<td th:text="${organization.organizationId}"><a
+										href="/organization/${organization.organizationId}">Id</a></td>
+									<td th:text="${organization.name}">Merchant Name</td>
+									<td th:text="${organization.createdDate}">Created Date</td>
+									<td th:text="${organization.createdBy}">Created By</td>
+									<td><a
+										th:href="${'/organization/' + organization.organizationId}">View</a></td>
+									<td><a
+										th:href="${'/organization/edit/' + organization.organizationId}">Edit</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!-- List Payment Modal Form  -->
+	<div class="modal fade" id="listPaymentModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Payment List</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="table-responsive">
+						<table
+							class="table table-hover js-basic-example dataTable table-custom">
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>Reference</th>
+									<th>Amount</th>
+									<th>Created By</th>
+									<th>View</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="payment : ${payments}">
+									<td th:text="${payment.paymentId}"><a
+										href="/payment/${payment.paymentId}">Id</a></td>
+									<td th:text="${payment.reference}">Reference</td>
+									<td th:text="${payment.amount}">Amount</td>
+									<td th:text="${payment.debitAccount}">Debit Account</td>
+									<td><a
+										th:href="${'/payment/' + payment.paymentId}">View</a></td>
+									<td><a
+										th:href="${'/payment/edit/' + payment.paymentId}">Edit</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="viewProfileModal" tabindex="-1"
+		role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Profile</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="table-responsive">
+						<table
+							class="table table-hover js-basic-example dataTable table-custom">
+							<thead class="thead-dark">
+								<tr>
+									<th>Id</th>
+									<th>First Name</th>
+									<th>Last Name</th>
+									<th>Created By</th>
+									<th>View</th>
+									<th>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="profile : ${user.userProfile}">
+									<td th:text="${profile.userId}"><a
+										href="/organization/${profile.userId}">Id</a></td>
+									<td th:text="${profile.firstName}">First Name</td>
+									<td th:text="${profile.lastName}">Last Name</td>
+									<td th:text="${profile.createdBy}">Created By</td>
+									<td><a th:href="${'/userProfile/' + profile.userId}">View</a></td>
+									<td><a th:href="${'/userProfile/edit/' + profile.userId}">Edit</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- Javascript -->
+	<script th:src="@{../js/libscripts.bundle.js}"></script>
+	<script th:src="@{../js/vendorscripts.bundle.js}"></script>
+
+	<script th:src="@{../js/chartist.bundle.js}"></script>
+	<script th:src="@{../js/knob.bundle.js}"></script>
+	<!-- Jquery Knob-->
+
+	<script th:src="@{../js/bootstrap-multiselect.js}"></script>
+	<script th:src="@{../js/parsley.min.js}"></script>
+
+	<script th:src="@{../js/mainscripts.bundle.js}"></script>
+	<script th:src="@{../js/index.js}"></script>
+	<script>
+		$(function() {
+			// validation needs name of the element
+			$('#food').multiselect();
+
+			// initialize after multiselect
+			$('#basic-form').parsley();
+		});
+	</script>
+
+	<script>
+		//this is for GET
+		$(function() {
+			/* Asset Sub Selector*/
+			$("#merchant").change(
+					function(event) {
+						$.ajax({
+							type : "GET",
+							url : "/../Collections/productbymerchant/"
+									+ $('#merchantId').val(),
+							beforeSend : function() {
+								/* $.gritter.add({
+									title : "Progress...",
+									text : "Fetching Asset Subs",
+									time : 3000
+								}); */
+							},
+							success : function(html) {
+								$("#product").html(html);
+								/* $.gritter.add({
+									title : "Success!",
+									text : "Asset Subs got",
+									time : 4000
+								}); */
+							},
+							error : function() {
+								/* $.gritter.add({
+											title : "Error!",
+											text : "Error fetching Asset Sub",
+											time : 4000
+										}); */
+							}
+
+						});
+					});
+		});
+	</script>
+</body>
+</html>

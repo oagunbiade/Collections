@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Collections</title>
+
+    <th:block th:include="fragments/headerinc :: head"></th:block> 
+</head>
+<body>
+<div class="container">
+   <th:block th:include="fragments/header :: header"></th:block>
+    <div th:if="${not #lists.isEmpty(payments)}">
+        <h2>Payment List </h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Reference</th>
+                <th>Amount</th>
+                <th>Created By</th>
+                <th>View</th>
+                <th>Edit</th>
+            </tr>
+            <tr th:each="payment : ${payments}">
+                <td th:text="${payment.paymentId}"><a th:href="/payment/${payment.paymentId}">Id</a></td>
+                <td th:text="${payment.reference}">Reference</td>
+                <td th:text="${payment.amount}">Amount</td>
+                <td th:text="${payment.createdBy}">Created By</td>
+                <td><a th:href="${'/payment/' + payment.paymentId}">View</a></td>
+                <td><a th:href="${'/payment/edit/' + payment.paymentId}">Edit</a></td> 
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Coronation</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!-- VENDOR CSS -->
+<link rel="icon" href="https://www.coronationmb.com/favicon.ico"
+	type="image/x-icon">
+<link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{css/font-awesome.min.css}">
+
+<link rel="stylesheet" th:href="@{../css/dataTables.bootstrap4.min.css}">
+<link rel="stylesheet"
+	th:href="@{../css/dataTables.fixedcolumns.bootstrap4.min.css}">
+<link rel="stylesheet"
+	th:href="@{../css/dataTables.fixedheader.bootstrap4.min.css}">
+<link rel="stylesheet" th:href="@{../css/bootstrap-multiselect.css}">
+<link rel="stylesheet" th:href="@{../css/bootstrap-datepicker3.min.css}">
+<link rel="stylesheet" th:href="@{../css/sweetalert.css}" />
+
+<!-- MAIN CSS -->
+<link rel="stylesheet" th:href="@{../css/main.css}">
+<link rel="stylesheet" th:href="@{../css/color_skins.css}">
+<style>
+td.details-control {
+	background: url('../images/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+
+tr.shown td.details-control {
+	background: url('../images/details_close.png') no-repeat center center;
+}
+</style>
+<style type="text/css">
+@font-face {
+	font-family: FedraSansStdLight;
+	src: url(../font/FedraSansStd-LightLF.otf);
+}
+
+html, body, h1, h2, h3, h4, h5, h6, p {
+	font-family: inherit;
+	font-weight: 400;
+	line-height: 1.71429;
+}
+
+body {
+	background: #fff;
+	font-size: 13px;
+	font-family: 'FedraSansStdLight';
+	font-weight: normal;
+	color: #003057;
+	height: 100%;
+}
+</style>
+</head>
+<body class="theme-orange">
+
+
+
+	<div id="wrapper">
+
+
+		<nav class="navbar navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-btn">
+					<button type="button" class="btn-toggle-offcanvas">
+						<i class="lnr lnr-menu fa fa-bars"></i>
+					</button>
+				</div>
+
+				<div class="navbar-brand">
+					<!-- <a href="index.html"><img src="images/logo.png" alt="Lucid Logo" class="img-responsive logo"></a>  -->
+				</div>
+
+				<div class="navbar-right">
+
+					<div id="navbar-menu">
+						<ul class="nav navbar-nav dropdown">
+
+							<a th:href="@{/organizationUsers}"><img th:src="@{../images/logo.png}"
+								style="width: 150px;" alt="Lucid Logo"
+								class="img-responsive logo"></a>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div id="left-sidebar" class="sidebar">
+			<div class="sidebar-scroll">
+				<div class="user-account">
+					<div class="dropdown">
+						<span>Welcome,</span> <a href="javascript:void(0);"
+							class="dropdown-toggle user-name" data-toggle="dropdown"><strong>Jessica
+								Doe</strong></a>
+						<ul
+							class="dropdown-menu dropdown-menu-right account animated flipInY">
+
+							<li><a href="page-login.html"><i class="icon-power"></i>Logout</a></li>
+						</ul>
+					</div>
+					<hr>
+				</div>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs">
+					<li class="nav-item"><a class="nav-link active"
+						data-toggle="tab" href="#hr_menu">Dashboard</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content p-l-0 p-r-0">
+					<div class="tab-pane animated fadeIn active" id="hr_menu">
+						<nav class="sidebar-nav">
+							<ul class="main-menu metismenu">
+								<li class="active"><a href="index.html"><i
+										class="icon-speedometer"></i><span>Dashboard</span></a></li>
+								<li><a href="#largeModal" data-toggle="modal" data-target="#largeModal"><i class="icon-list"></i>Register</a></li>
+								<li><a href="table.html"><i class="icon-calendar"></i>Table</a></li>
+								<li><a href="login.html"><i class="icon-badge"></i>Login</a></li>
+								<li><a href="form.html"><i class="icon-globe"></i>Form</a></li>
+								<li><a href="blank.html"><i class="icon-globe"></i>Blank</a></li>
+
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="main-content">
+			<div class="container-fluid">
+				<div class="block-header">
+					<div class="row">
+						<div class="col-lg-6 col-md-8 col-sm-12">
+							<h2>
+								<a href="javascript:void(0);"
+									class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+									class="fa fa-arrow-left"></i></a> User Types
+							</h2>
+						</div>
+						<div class="col-lg-6 col-md-4 col-sm-12 text-right"></div>
+					</div>
+				</div>
+
+				<div class="row clearfix">
+					<div class="col-lg-12">
+						<div class="card">
+
+							<div class="header">
+								<h2>
+									User Types <small> Create new user types </small>
+								</h2>
+							</div>
+							<a href="#largeModal" data-toggle="modal"
+								data-target="#largeModal" class="btn btn-primary m-b-15">Add
+								New</a>
+
+							<div class="body">
+								<div class="table-responsive">
+									<table
+										class="table table-hover js-basic-example dataTable table-custom">
+										<thead class="thead-dark">
+											<tr>
+												<th>User Type Id</th>
+												<th>User Type</th>
+												<th>Created By</th>
+												<th>Created Date</th>
+												<th>View</th>
+												<th>Edit</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="type : ${userTypes}">
+												<td th:text="${type.userTypeId}"><a
+													href="/usertype/${type.userTypeId}">Id</a></td>
+												<td th:text="${type.type}">Type</td>
+												<td th:text="${type.createdBy}">Created By</td>
+												<td th:text="${type.createdDate}">Date Created</td>
+												<td><a th:href="${ '/usertype/' + type.userTypeId}">View</a></td>
+												<td><a th:href="${'/usertype/edit/' + type.userTypeId}">Edit</a></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+	<div class="modal fade" id="largeModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="title" id="largeModalLabel">Modal title</h4>
+				</div>
+				<div class="modal-body">
+
+
+					<form id="basic-form" method="post" action="send.php" novalidate>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label> Name</label> <input type="text" class="form-control"
+										required>
+								</div>
+								<div class="form-group">
+									<label>Address</label> <input type="email" class="form-control"
+										required>
+								</div>
+								<div class="form-group">
+									<label> Number</label> <input type="email" class="form-control"
+										required>
+								</div>
+
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>Fee</label> <input type="email" class="form-control"
+										required>
+								</div>
+								<div class="form-group">
+									<label>Expiry Date</label> <input data-provide="datepicker"
+										data-date-autoclose="true" class="form-control">
+								</div>
+							</div>
+							<br>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary">SAVE
+									CHANGES</button>
+								<button type="button" class="btn btn-danger"
+									data-dismiss="modal">CLOSE</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Javascript -->
+	<script th:src="@{../js/libscripts.bundle.js}"></script>
+	<script th:src="@{../js/vendorscripts.bundle.js}"></script>
+
+	<script th:src="@{../js/datatablescripts.bundle.js}"></script>
+	<script th:src="@{../js/dataTables.buttons.min.js}"></script>
+	<script th:src="@{../js/buttons.bootstrap4.min.js}"></script>
+	<script th:src="@{../js/buttons.colVis.min.js}"></script>
+	<script th:src="@{../js/buttons.html5.min.js}"></script>
+	<script th:src="@{../js/buttons.print.min.js}"></script>
+	<script th:src="@{../js/bootstrap-multiselect.js}"></script>
+	<script th:src="@{../js/bootstrap-datepicker.min.js}"></script>
+
+	<script th:src="@{../js/sweetalert.min.js}"></script>
+	<!-- SweetAlert Plugin Js -->
+
+
+	<script th:src="@{../js/mainscripts.bundle.js}"></script>
+	<script th:src="@{../js/jquery-datatable.js}"></script>
+</body>
+</html>

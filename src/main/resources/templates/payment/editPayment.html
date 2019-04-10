@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Collections</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <h2>Create Merchant</h2>
+    <div>
+        <form class="form-horizontal" th:object="${payment}" th:action="@{/payment/save}" method="POST">
+            <input type="hidden" th:field="*{paymentId}"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Reference:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{reference}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Amount:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{amount}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Debit Account:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{debitAccount}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Debit Bank Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{debitBankName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Debit BankCode:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{debitBankCode}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Credit Account:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{creditAccount}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Credit Bank Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{creditBankName}"/>
+                </div>
+            </div>
+             <div class="form-group">
+                <label class="col-sm-2 control-label">Credit Bank Code:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{creditBankCode}"/>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>

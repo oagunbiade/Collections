@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Coronation Form</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="icon" href="https://www.coronationmb.com/favicon.ico"
+	type="image/x-icon">
+<!-- VENDOR CSS -->
+
+<link rel="stylesheet" th:href="@{../css/bootstrap-multiselect.css}">
+<link rel="stylesheet" th:href="@{../css/parsley.css}">
+
+
+<link rel="icon" href="https://www.coronationmb.com/favicon.ico"
+	type="image/x-icon">
+<!-- VENDOR CSS -->
+<link href="../../../static/css/bootstrap.min.css" rel="stylesheet"
+	th:href="@{../css/bootstrap.min.css}">
+<link href="../../../static/css/font-awesome.min.css" rel="stylesheet"
+	th:href="@{../css/font-awesome.min.css}">
+
+<link href="../../../static/css/chartist.min.css" rel="stylesheet"
+	th:href="@{../css/chartist.min.css}">
+<link href="../../../static/css/chartist-plugin-tooltip.css"
+	rel="stylesheet" th:href="@{../css/chartist-plugin-tooltip.css}">
+
+<!-- MAIN CSS -->
+<link href="../../../static/css/main.css" rel="stylesheet"
+	th:href="@{../css/main.css}">
+<link href="../../../static/css/color_skins.css" rel="stylesheet"
+	th:href="@{../css/color_skins.css}">
+<style type="text/css">
+@font-face {
+	font-family: FedraSansStdLight;
+	src: url(font/FedraSansStd-LightLF.otf);
+}
+
+html, body, h1, h2, h3, h4, h5, h6, p {
+	font-family: inherit;
+	font-weight: 400;
+	line-height: 1.71429;
+}
+
+body {
+	background: #fff;
+	font-size: 13px;
+	font-family: 'FedraSansStdLight';
+	font-weight: normal;
+	color: #003057;
+	height: 100%;
+}
+</style>
+</head>
+<body class="theme-orange">
+
+
+
+	<div id="wrapper">
+
+
+		<nav class="navbar navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-btn">
+					<button type="button" class="btn-toggle-offcanvas">
+						<i class="lnr lnr-menu fa fa-bars"></i>
+					</button>
+				</div>
+
+				<div class="navbar-brand">
+					<!-- <a href="index.html"><img src="images/logo.png" alt="Lucid Logo" class="img-responsive logo"></a>  -->
+				</div>
+
+				<div class="navbar-right">
+
+					<div id="navbar-menu">
+						<ul class="nav navbar-nav dropdown">
+
+							<a href="index.html"><img th:src="@{../images/logo.png}"
+								style="width: 150px;" alt="Lucid Logo"
+								class="img-responsive logo"></a>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div id="left-sidebar" class="sidebar">
+			<div class="sidebar-scroll">
+				<div class="user-account">
+					<div class="dropdown">
+						<span>Welcome,</span> <a th:href="@{../javascript:void(0);}"
+							class="dropdown-toggle user-name" data-toggle="dropdown"><strong>Jessica
+								Doe</strong></a>
+						<ul
+							class="dropdown-menu dropdown-menu-right account animated flipInY">
+
+							<li><a href="page-login.html"><i class="icon-power"></i>Logout</a></li>
+						</ul>
+					</div>
+					<hr>
+				</div>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs">
+					<li class="nav-item"><a class="nav-link active"
+						data-toggle="tab" href="#hr_menu">Dashboard</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content p-l-0 p-r-0">
+					<div class="tab-pane animated fadeIn active" id="hr_menu">
+						<nav class="sidebar-nav">
+							<ul class="main-menu metismenu">
+								<!--  <li class="active"><a href="index.html"><i class="icon-speedometer"></i><span>Dashboard</span></a></li> -->
+								<li class="active"><a href="#App" class="has-arrow"><i
+										class="icon-speedometer"></i> <span>Profile</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#viewProfileModal">View Profile</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Manage Profile</a></li>
+									</ul></li>
+								<li><a href="#App" class="has-arrow"><i
+										class="icon-globe"></i> <span>Organization</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#createOrgModal">Create Organization</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#listOrgModal">Manage Organization</a></li>
+									</ul></li>
+								<li><a href="#App" class="has-arrow"><i
+										class="icon-grid"></i> <span>User Types</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Create User Type</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Manage User Type</a></li>
+									</ul></li>
+								<li><a href="#App" class="has-arrow"><i
+										class="icon-badge"></i> <span>Merchant</span></a>
+									<ul>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Create Merchant</a></li>
+										<li><a href="#largeModal" data-toggle="modal"
+											data-target="#largeModal">Manage Merchant</a></li>
+									</ul></li>
+								<!-- 
+                            <li><a href="table.html"><i class="icon-calendar"></i>Table</a></li>
+                            <li><a href="login.html"><i class="icon-badge"></i>Login</a></li>
+                            <li><a href="form.html"><i class="icon-globe"></i>Form</a></li>
+                            <li><a href="blank.html"><i class="icon-globe"></i>Blank</a></li>
+                         -->
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="main-content">
+			<div class="container-fluid">
+				<div class="block-header">
+					<div class="row">
+						<div class="col-lg-6 col-md-8 col-sm-12">
+							<h2>
+								<a href="javascript:void(0);"
+									class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+									class="fa fa-arrow-left"></i></a> Form Validation
+							</h2>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="index.html"><i
+										class="icon-home"></i></a></li>
+								<li class="breadcrumb-item">Forms</li>
+								<li class="breadcrumb-item active">Form Validation</li>
+							</ul>
+						</div>
+						<div class="col-lg-6 col-md-4 col-sm-12 text-right">
+							<div class="bh_chart hidden-xs">
+								<div class="float-left m-r-15">
+									<small>Visitors</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-user"></i> 1,784
+									</h6>
+								</div>
+								<span class="bh_visitors float-right">2,5,1,8,3,6,7,5</span>
+							</div>
+							<div class="bh_chart hidden-sm">
+								<div class="float-left m-r-15">
+									<small>Visits</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-globe"></i> 325
+									</h6>
+								</div>
+								<span class="bh_visits float-right">10,8,9,3,5,8,5</span>
+							</div>
+							<div class="bh_chart hidden-sm">
+								<div class="float-left m-r-15">
+									<small>Chats</small>
+									<h6 class="mb-0 mt-1">
+										<i class="icon-bubbles"></i> 13
+									</h6>
+								</div>
+								<span class="bh_chats float-right">1,8,5,6,2,4,3,2</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row clearfix">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="header">
+								<h2>Basic Validation</h2>
+							</div>
+							<div class="body">
+								<form id="basic-form" th:object="${product}"
+									th:action="@{/product/save}" method="POST">
+									<input type="hidden" th:field="*{productId}" />
+									<div class="form-group">
+										<label>Product Name</label> <input type="text"
+											class="form-control" th:field="*{productName}">
+									</div>
+									<div class="form-group">
+										<label>Product Cost</label> <input type="text"
+											class="form-control" th:field="*{cost}">
+									</div>
+									<div class="form-group">
+										<label>Measurement</label> <input type="text"
+											class="form-control" th:field="*{measurement}">
+									</div>
+									<div class="form-group">
+										<select th:field="*{merchant}" class="form-control">
+											<option th:each="merchant : ${merchants}"
+												th:value="${merchant.merchantId}" th:text="${merchant.merchantName}"></option>
+										</select> <span class="text-danger"
+											th:if="${#fields.hasErrors('merchant')}"
+											th:errors="*{merchant}"></span>
+									</div>
+
+
+									<br>
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Javascript -->
+	<script src="js/libscripts.bundle.js"></script>
+	<script src="js/vendorscripts.bundle.js"></script>
+
+	<script src="js/bootstrap-multiselect.js"></script>
+	<script src="js/parsley.min.js"></script>
+
+	<script src="js/mainscripts.bundle.js"></script>
+	<script>
+		$(function() {
+			// validation needs name of the element
+			$('#food').multiselect();
+
+			// initialize after multiselect
+			$('#basic-form').parsley();
+		});
+	</script>
+</body>
+</html>
+

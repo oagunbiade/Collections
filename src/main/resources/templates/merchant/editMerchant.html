@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Collections</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <h2>Create Merchant</h2>
+    <div>
+        <form class="form-horizontal" th:object="${merchant}" th:action="@{/merchant/update}" method="POST">
+            <input type="hidden" th:field="*{merchantId}"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Merchant Code:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{merchantCode}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Merchant Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{merchantName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Bank Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{bankName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Bank Code:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{bankCode}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Account Number:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{AccountNumber}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{email}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Phone:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{phone}"/>
+                </div>
+            </div>
+             <div class="form-group">
+                <label class="col-sm-2 control-label">Address:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{address}"/>
+                </div>
+            </div>
+             <div class="form-group">
+                <label class="col-sm-2 control-label">City:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{city}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">State:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{state}"/>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
