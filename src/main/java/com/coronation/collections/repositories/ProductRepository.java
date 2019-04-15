@@ -14,6 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 	Long countByMerchantId(Long id);
     @Query("select distinct p.product from Payment p where p.merchant.id = ?1 and p.distributor.id = ?2")
     List<Product> findDistributorProducts(Long merchantId, Long distributorId);
-    Product findByProductCode(String code);
-    Product findByProductName(String name);
+    Product findByCode(String code);
+    Product findByName(String name);
 }

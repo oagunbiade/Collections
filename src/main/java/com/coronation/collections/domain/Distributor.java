@@ -25,6 +25,12 @@ public class Distributor {
     @NotNull
     @Column(unique = true)
     private String bvn;
+    @NotNull
+    @Column(unique = true)
+    private String email;
+    @NotNull
+    @Column(unique = true)
+    private String phoneNumber;
     @OneToMany( fetch = FetchType.EAGER)
     @JoinColumn(name = "distributor_id")
     private Set<DistributorAccount> distributorAccounts;
@@ -90,6 +96,22 @@ public class Distributor {
 
     public void setDistributorAccounts(Set<DistributorAccount> distributorAccounts) {
         this.distributorAccounts = distributorAccounts;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getRejectReason() {

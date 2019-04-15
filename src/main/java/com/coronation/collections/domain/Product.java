@@ -17,11 +17,11 @@ public class Product {
 
 	@NotNull
 	@Column(name = "product_name", unique = true)
-	private String productName;
+	private String name;
 
 	@NotNull
 	@Column(name = "product_code", unique = true)
-	private String productCode;
+	private String code;
 	@Column(name="created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -63,12 +63,12 @@ public class Product {
 		this.id = id;
 	}
 
-	public String getProductName() {
-		return productName;
+	public String getName() {
+		return name;
 	}
 
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public MerchantAccount getAccount() {
@@ -79,12 +79,12 @@ public class Product {
 		this.account = account;
 	}
 
-	public String getProductCode() {
-		return productCode;
+	public String getCode() {
+		return code;
 	}
 
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public GenericStatus getStatus() {

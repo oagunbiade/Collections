@@ -1,5 +1,9 @@
 package com.coronation.collections.util;
 
+import com.coronation.collections.domain.*;
+import com.coronation.collections.domain.enums.GenericStatus;
+import com.coronation.collections.services.DistributorService;
+import com.coronation.collections.services.MerchantService;
 import org.springframework.util.Base64Utils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +89,70 @@ public class GenericUtil {
         return new String(randomChars);
     }
 
+    public static boolean isStaffEmail(String email) {
+        return email.toLowerCase().endsWith(Constants.STAFF_EMAIL_SUFFIX);
+    }
+
     public static String generateRandomId() {
         return UUID.randomUUID().toString();
     }
+
+    public static boolean isMerchantUser(Role role) {
+        return role.getName().toUpperCase().startsWith(MERCHANT_ROLE_PREFIX);
+    }
+
+    public static boolean isDistributorUser(Role role) {
+        return role.getName().toUpperCase().startsWith(DISTRIBUTOR_ROLE_PREFIX);
+    }
+
+    public static boolean isDistributorMerchant(Merchant merchant, User user, DistributorService distributorService) {
+        DistributorUser distributorUser = distributorService.findByUserId(user.getId());
+        if (distributorUser == null) {
+            return false;
+        } else {
+            MerchantDistributor merchantDistributor = distributorService.
+                    findByMerchantIdAndDistributorId(merchant.getId(), distributorUser.getDistributor().getId());
+            return merchantDistributor != null;
+        }
+    }
+
+    public static boolean isProductValid(Product product) {
+        return !product.getDeleted() && product.getStatus().equals(GenericStatus.ACTIVE);
+    }
+
+    public static boolean isMerchantAccountValid(MerchantAccount account) {
+        return !account.getDeleted() && account.getStatus().equals(GenericStatus.ACTIVE) &&
+                isAccountValid(account.getAccount());
+    }
+
+    public static boolean isMerchantValid(Merchant merchant) {
+       return !merchant.getDeleted() && merchant.getStatus().equals(GenericStatus.ACTIVE) &&
+               !merchant.getOrganization().getDeleted() &&
+               merchant.getOrganization().getStatus().equals(GenericStatus.ACTIVE);
+    }
+
+    public static boolean isAccountValid(Account account) {
+        return !account.getDeleted() &&
+            account.getStatus().equals(GenericStatus.ACTIVE);
+    }
+
+    public static boolean isMerchantProduct(Product product, User user, MerchantService merchantService) {
+        MerchantUser merchantUser = merchantService.findByMerchantUserId(user.getId());
+        return merchantUser != null && merchantUser.getMerchant().equals(product.getMerchant());
+    }
+
+    public static LocalDateTime[] getDateRange(LocalDateTime from, LocalDateTime to) {
+        if (from == null) {
+            from = LocalDateTime.now();
+        }
+        if (to == null || to.isBefore(from)) {
+            to = from;
+        }
+        from = GenericUtil.truncateTime(from);
+        to = GenericUtil.ceilTime(to);
+        return new LocalDateTime[] {from, to};
+    }
+
+    private static final String MERCHANT_ROLE_PREFIX = "MERCHANT";
+    private static final String DISTRIBUTOR_ROLE_PREFIX = "DISTRIBUTOR";
 }

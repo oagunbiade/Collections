@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User findByPhone(String phone) {
+		return userRepository.findByPhone(phone);
+	}
+
+	@Override
 	public User findById(Long id) {
 		return userRepository.findById(id).orElse(null);
 	}
@@ -56,7 +61,7 @@ public class UserServiceImpl implements UserService {
 		prev.setLastName(current.getLastName());
 		prev.setOtherNames(current.getOtherNames());
 		prev.setPhone(current.getPhone());
-		prev.setUserName(current.getUserName());
+		prev.setEmail(current.getEmail());
 		prev.setModifiedAt(LocalDateTime.now());
 		return userRepository.saveAndFlush(prev);
 	}

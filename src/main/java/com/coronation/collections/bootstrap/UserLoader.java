@@ -35,7 +35,7 @@ public class UserLoader implements ApplicationListener<ContextRefreshedEvent> {
 			Organization org = new Organization();
 			org.setName("Sahara Energy");
 			User user = new User();
-			user.setUserName("olatunbossun@gmail.com");
+			user.setEmail("olatunbossun@gmail.com");
 			user.setPassword("password");
 			user = userRepository.save(user);
 			Role role = getOrCreateRole();
@@ -51,7 +51,7 @@ public class UserLoader implements ApplicationListener<ContextRefreshedEvent> {
 		Role role = roleRepository.findByRoleName("Admin");
 		if (role == null) {
 			role = new Role();
-			role.setRoleName("Admin");
+			role.setName("Admin");
 			role = roleRepository.saveAndFlush(role);
 		}
 		return role;

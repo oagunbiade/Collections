@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public interface AuthenticationDetailService {
     AuthenticationDetail create() throws NoSuchAlgorithmException, DataEncryptionException;
+    AuthenticationDetail regenerateKey(AuthenticationDetail authenticationDetail) throws NoSuchAlgorithmException, DataEncryptionException;
     AuthenticationDetail decrypt(AuthenticationDetail authenticationDetail) throws DataEncryptionException;
     AuthenticationDetail edit(AuthenticationDetail prev, AuthenticationDetail current);
     AuthenticationDetail disable(AuthenticationDetail authenticationDetail);

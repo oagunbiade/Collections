@@ -427,11 +427,11 @@ body {
 								<input type="hidden" th:field="*{productId}" />
 								<div class="form-group">
 									<label>Product Name</label> <input type="text"
-										class="form-control" th:field="*{productName}">
+										class="form-control" th:field="*{name}">
 								</div>
 								<div class="form-group">
 									<label>Product Code</label> <input type="text"
-										class="form-control" th:field="*{productCode}">
+										class="form-control" th:field="*{code}">
 								</div>
 								<div class="form-group">
 									<label>Cost</label> <input type="text" class="form-control"
@@ -516,7 +516,7 @@ body {
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>Bank Name</label> <input type="text"
-										class="form-control" th:field="*{bankName}">
+										class="form-control" th:field="*{name}">
 								</div>
 								<div class="form-group">
 									<label>Bank Code</label> <input type="text"
@@ -578,7 +578,7 @@ body {
 										<option value="0">Select..</option>
 										<option th:each="product : ${products}"
 											th:value="${product.productId}"
-											th:text="${product.productName}"></option>
+											th:text="${product.name}"></option>
 									</select> <span class="text-danger"
 										th:if="${#fields.hasErrors('product')}" th:errors="*{product}"></span>
 								</div>
@@ -705,8 +705,8 @@ body {
 								<tr th:each="product : ${products}">
 									<td th:text="${product.productId}"><a
 										th:href="/product/${product.productId}">Id</a></td>
-									<td th:text="${product.productName}">Name</td>
-									<td th:text="${product.productCode}">Code</td>
+									<td th:text="${product.name}">Name</td>
+									<td th:text="${product.code}">Code</td>
 									<td th:text="${product.cost}">Cost</td>
 									<td th:text="${product.createdBy}">Created By</td>
 									<td th:text="${product.status}">Status</td>
@@ -756,7 +756,7 @@ body {
 									<td th:text="${merchant.merchantName}">Name</td>
 									<td th:text="${merchant.merchantCode}">Code</td>
 									<td th:text="${merchant.accountNumber}">Account</td>
-									<td th:text="${merchant.bankName}">Bank</td>
+									<td th:text="${merchant.name}">Bank</td>
 									<td th:text="${merchant.email}">Email</td>
 									<td><a th:href="${'/merchant/' + merchant.merchantId}">View</a></td>
 									<td><a th:href="${'/merchant/edit/' + merchant.merchantId}">Edit</a></td>

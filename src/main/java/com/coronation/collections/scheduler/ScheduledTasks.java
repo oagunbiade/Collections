@@ -32,10 +32,7 @@ public class ScheduledTasks {
 	private String transferUrl;
 
 	@Scheduled(fixedRate = 1000000)
-	public String schedulePaymentTask(){
-		
-
-
+	public String schedulePaymentTask() {
 		List<Payment> payments = this.paymentService.findAllDuePayments(LocalDate.now());
 		
 		int listSize = payments.size();
@@ -50,7 +47,7 @@ public class ScheduledTasks {
 		int i = 0;
 		for(Payment payment : payments) {
 
-		int retry = payment.getRetryCount();
+		int retry = payment.getTryCount();
 
 		logger.info("Processing payment for: " +payment.getReferenceCode());
 
@@ -80,7 +77,7 @@ public class ScheduledTasks {
 			if (bal <= payment.getAmount()) {
 				logger.info("insufficient balance : ");
 				payment.setStatus("COMPLETED");
-				payment.setRetryCount(retry+1);
+				payment.setTryCount(retry+1);
 			
 				 retVal = "done";				
 			}
@@ -103,7 +100,7 @@ public class ScheduledTasks {
 			if (responseCode != "000") {
 				logger.info("Transfer failed : ");
 
-				payment.setRetryCount(retry + 1);
+				payment.setTryCount(retry + 1);
 				++i;
 				 retVal = "done";	
 			}
@@ -111,9 +108,9 @@ public class ScheduledTasks {
 		
 			payment.setStatus(PaymentStatus.PROCESSED);
 			try {
-				logger.info("Before payment update 1 : ");
+				logger.info("Before payment edit 1 : ");
 				paymentService.update(payment);
-				logger.info("after payment update 1 : ");
+				logger.info("after payment edit 1 : ");
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

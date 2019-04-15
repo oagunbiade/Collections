@@ -10,5 +10,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 public interface BankRepository extends JpaRepository<Bank, Long>,
         QuerydslPredicateExecutor<Bank> {
     Bank findByBankCode(String code);
-    Bank findByBankName(String name);
+    Bank findByName(String name);
 }

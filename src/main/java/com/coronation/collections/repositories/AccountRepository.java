@@ -11,7 +11,6 @@ import java.util.List;
  */
 public interface AccountRepository extends JpaRepository<Account, Long>,
         QuerydslPredicateExecutor<Account> {
-    Account findByAccountName(String accountName);
     List<Account> findByBvn(String bvn);
     Account findByAccountNumber(String accountNumber);
 }

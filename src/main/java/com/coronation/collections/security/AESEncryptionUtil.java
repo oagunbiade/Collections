@@ -18,13 +18,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.coronation.collections.exception.DataEncryptionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AESEncryptionUtil {
-    @Autowired
-    private Environment environment;
+    @Value("${app.key}")
+    private String appKey;
 
     private static final String cipherTransformation = "AES/ECB/PKCS5Padding";
     private static final String aesEncryptionAlgorithm = "AES";
@@ -99,8 +100,7 @@ public class AESEncryptionUtil {
     }
 
     public EncryptionKey getEncryptionKey()  {
-        String encryptString = environment.getProperty("COLLECTION_API_KEY");
-        byte[] encryptStringByte = encryptString.getBytes();
+        byte[] encryptStringByte = appKey.getBytes();
         byte[] fin = new byte[16];
         for (int r = 0; r < encryptStringByte.length && r < 16; r++) {
             fin[r] = encryptStringByte[r];

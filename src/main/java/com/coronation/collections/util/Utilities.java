@@ -19,16 +19,23 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.mail.internet.MimeMessage;
 
+import com.coronation.collections.dto.AccountDetailRequest;
+import com.coronation.collections.dto.AccountDetailResponse;
+import com.coronation.collections.dto.TransferRequest;
+import com.coronation.collections.dto.TransferResponse;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonObject;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class Utilities {
@@ -37,6 +44,15 @@ public class Utilities {
 
 	@Autowired
 	private JavaMailSender sender;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Value("${app.balanceUrl}")
+	private String balanceUrl;
+
+	@Value("${app.transferUrl}")
+	private String transferUrl;
 
 	public String getCurrentTimeUsingDate() {
 		Date date = new Date();
@@ -126,13 +142,11 @@ public class Utilities {
 	}
 
 	public static float getBalRequest(String accountNumber, String url) throws IOException {
-		
 		StringBuffer response = new StringBuffer();
 		JsonObject POST_PARAMS = new JsonObject();
 		POST_PARAMS.addProperty("accountNumber", accountNumber);
 		
 		System.out.println(POST_PARAMS);
-		// URL obj = new URL("https://jsonplaceholder.typicode.com/posts");
 		URL obj = new URL(url);
 		HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
 		postConnection.setRequestMethod("POST");
@@ -152,7 +166,6 @@ public class Utilities {
 				response.append(inputLine);
 			}
 			in.close();
-			// print result
 			System.out.println(response.toString());
 			
 			JSONObject myResponse = new JSONObject(response.toString());
@@ -213,5 +226,21 @@ public class Utilities {
 			logger.info("POST DIDN'T WORK");
 			return "ERROR";
 		}
+	}
+
+	public ResponseEntity<AccountDetailResponse> getAccountDetails(AccountDetailRequest request) {
+		return makePostCall(balanceUrl, request, AccountDetailResponse.class);
+	}
+
+	public ResponseEntity<TransferResponse> postTransfer(TransferRequest request) {
+		return makePostCall(transferUrl, request, TransferResponse.class);
+	}
+
+	public <T> ResponseEntity<T> makeGetCall(String url, Class<T> clazz) {
+		return restTemplate.getForEntity(url, clazz);
+	}
+
+	public <T> ResponseEntity<T> makePostCall(String url, Object object, Class<T> clazz) {
+		return restTemplate.postForEntity(url, object, clazz);
 	}
 }

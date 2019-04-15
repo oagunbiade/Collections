@@ -1,18 +1,13 @@
 package com.coronation.collections.domain;
 
-import java.io.Serializable;
-import java.sql.Blob;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.coronation.collections.domain.enums.GenericStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -26,7 +21,7 @@ public class User {
 	@NotNull
 	@Email
 	@Column(name = "email")
-	private String userName;
+	private String email;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "password", nullable = false)
@@ -64,9 +59,11 @@ public class User {
 	@Column(name = "status")
 	private GenericStatus status = GenericStatus.ACTIVE;
 
+	@NotNull
 	@Column(nullable = false)
 	private Boolean deleted = Boolean.FALSE;
-	
+
+	@NotNull
 	@Column(name = "flagged")
 	private Boolean flagged = Boolean.FALSE;
 
@@ -89,12 +86,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {

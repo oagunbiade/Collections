@@ -82,7 +82,7 @@
 						<tbody>
 							<tr th:each="user : ${user}">
 								<td th:text="${user.userId}"></td>
-								<td class="hidden-xs" th:text="${user.userName}"></td>
+								<td class="hidden-xs" th:text="${user.email}"></td>
 								<td th:text="${user.userType.type}"></td>
 								<td class="hidden-xs" th:text="${user.createdBy}"></td>
 								<td th:text="${user.createdDate}"></td>

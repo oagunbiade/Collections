@@ -1,5 +1,7 @@
 package com.coronation.collections.domain;
 
+import com.coronation.collections.domain.enums.TaskType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -16,7 +18,7 @@ public class Task {
 
     @NotNull
     @Column(unique = true)
-    private String name;
+    private TaskType name;
 
     @Column(name="created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -32,11 +34,11 @@ public class Task {
         this.id = id;
     }
 
-    public String getName() {
+    public TaskType getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(TaskType name) {
         this.name = name;
     }
 

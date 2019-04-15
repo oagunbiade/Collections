@@ -16,16 +16,17 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>,
 		QuerydslPredicateExecutor<Payment> {
 	Payment findByReferenceCode(String referenceCode);
 	@Query(value = "SELECT p FROM Payment p WHERE p.status = 'APPROVED' " +
-			"and p.retryCount < 3 and p.dueDate <= ?1")
+			"and p.tryCount < 3 and p.dueDate <= ?1")
 	List<Payment> findAllDuePayments(LocalDate dueDate);
 	@Query(value = "SELECT p FROM Payment p WHERE p.status <> 'PROCESSED'")
 	List<Payment> findAllPendingPayments();
 	@Query(value = "SELECT p FROM Payment p WHERE p.merchant.id = ?1 and p.status <> 'PROCESSED' " +
 			"and p.dueDate = ?2")
 	List<Payment> findMerchantDuePayments(Long merchantId, LocalDate dueDate);
-	@Query(value = "SELECT p FROM Payment p WHERE p.distributor.id = ?1 and p.status <> 'PROCESSED' " +
-			"and p.dueDate = ?2")
-	List<Payment> findDistributorDuePayments(Long distributorId, LocalDate dueDate);
+	@Query(value = "SELECT p FROM Payment p WHERE p.merchant.id = ?1 and p.distributor.id = ?2" +
+			" and p.status <> 'PROCESSED' " +
+			"and p.dueDate = ?3")
+	List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDate dueDate);
 	List<Payment> findByMerchantId(Long id);
 	List<Payment> findByMerchantIdAndStatus(Long id, PaymentStatus status);
 	List<Payment> findByDistributorId(Long id);

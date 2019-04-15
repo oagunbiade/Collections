@@ -6,9 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.coronation.collections.domain.*;
-import com.coronation.collections.dto.AmountReport;
-import com.coronation.collections.dto.ApprovalDto;
-import com.coronation.collections.dto.CountReport;
+import com.coronation.collections.dto.*;
+import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.exception.InvalidDataException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
@@ -33,10 +32,12 @@ public interface PaymentService {
     void setDistributorAmountReport
             (Long distributorId, AmountReport amountReport, CountReport countReport);
     List<Payment> findMerchantDuePayments(Long merchantId, LocalDate localDate);
-    List<Payment> findDistributorDuePayments(Long distributorId, LocalDate localDate);
+    List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDate localDate);
     Payment cancelPayment(Payment payment);
     List<InvalidPayment> uploadPayments(InputStream inputStream, Merchant merchant, User user) throws IOException;
     Payment validatePayment(InvalidPayment invalidPayment, Merchant merchant, User user) throws InvalidDataException;
     Payment confirmPayment(Payment payment);
     List<InvalidPayment> merchantInvalidPayments(Long merchantId);
+    TransferResponse transfer(TransferRequest transferRequest) throws ApiException;
+    Payment setDistributorAccount(Payment payment, DistributorAccount account);
 }

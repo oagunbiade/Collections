@@ -48,7 +48,7 @@ public class FileController {
     public String upload(@PathVariable("userId") Long userId,@RequestParam MultipartFile file) throws IOException {
 
 		ExcelFileGenerator excelGen = new ExcelFileGenerator();
-		User user = this.userService.getUserById(userId);
+		User user = this.userService.findById(userId);
 		
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		
@@ -84,7 +84,7 @@ public class FileController {
 		 for (List<String> list2 : list) {
              if(!list2.isEmpty()) {
              Payment payment = new Payment();
-             payment.setReference(sdf.format(timestamp));
+             payment.setReferenceCode(sdf.format(timestamp));
              paymentList.add(payment);
              i++;
              }

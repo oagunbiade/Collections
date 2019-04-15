@@ -22,7 +22,7 @@
             </tr>
             <tr th:each="user : ${organizationUsers}">
                 <td th:text="${user.UserId}"><a href="/user/${user.userId}">Id</a></td>
-                <td th:text="${user.userName}">User Name</td>
+                <td th:text="${user.email}">User Name</td>
                 <td th:text="${user.createdBy}">Created By</td>
                 <td th:text="${user.createdDate}">Date Created</td>
                 <td><a th:href="${ '/user/' + user.userId}">View</a></td>

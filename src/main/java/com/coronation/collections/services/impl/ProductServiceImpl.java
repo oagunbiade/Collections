@@ -2,13 +2,12 @@ package com.coronation.collections.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import com.coronation.collections.domain.Merchant;
 import com.coronation.collections.domain.MerchantAccount;
-import com.coronation.collections.domain.User;
 import com.coronation.collections.domain.enums.GenericStatus;
 import com.coronation.collections.dto.ApprovalDto;
+import com.coronation.collections.repositories.MerchantAccountRepository;
 import com.coronation.collections.services.ProductService;
 import com.coronation.collections.util.JsonConverter;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,10 +22,12 @@ import com.coronation.collections.repositories.ProductRepository;
 @Service
 public class ProductServiceImpl implements ProductService {
 	private ProductRepository productRepository;
+	private MerchantAccountRepository accountRepository;
 
 	@Autowired
-	public ProductServiceImpl(ProductRepository productRepository) {
+	public ProductServiceImpl(ProductRepository productRepository, MerchantAccountRepository accountRepository) {
 		this.productRepository = productRepository;
+		this.accountRepository = accountRepository;
 	}
 
 	@Override
@@ -67,8 +68,8 @@ public class ProductServiceImpl implements ProductService {
 				Product edit = JsonConverter.getElement(product.getUpdateData(), Product.class);
 				product.setComment(edit.getComment());
 				product.setMinAmount(edit.getMinAmount());
-				product.setProductCode(edit.getProductCode());
-				product.setProductName(edit.getProductName());
+				product.setCode(edit.getCode());
+				product.setName(edit.getName());
 				product.setModifiedAt(edit.getCreatedAt());
 				product.setRejectReason(null);
 				product.setUpdateData(null);
@@ -100,12 +101,19 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product approveAccount(Product product, MerchantAccount merchantAccount, ApprovalDto approvalDto) {
+	public Product approveAccount(Product product, ApprovalDto approvalDto) {
 		if (approvalDto.getApprove()) {
-			product.setAccount(merchantAccount);
-			product.setModifiedAt(LocalDateTime.now());
-			product.setAccountUpdateData(null);
-			product.setRejectReason(null);
+			if (product.getAccountUpdateData() != null) {
+				MerchantAccount account =
+					JsonConverter.getElement(product.getAccountUpdateData(), MerchantAccount.class);
+				account = accountRepository.findById(account.getId()).orElse(null);
+				if (account != null) {
+					product.setAccount(account);
+				}
+				product.setModifiedAt(LocalDateTime.now());
+				product.setAccountUpdateData(null);
+				product.setRejectReason(null);
+			}
 		} else {
 			product.setRejectReason(approvalDto.getReason());
 		}
@@ -134,11 +142,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product findByName(String name) {
-		return productRepository.findByProductName(name);
+		return productRepository.findByName(name);
 	}
 
 	@Override
 	public Product findByCode(String code) {
-		return productRepository.findByProductCode(code);
+		return productRepository.findByCode(code);
 	}
 }

@@ -39,6 +39,14 @@ public class AuthenticationDetailServiceImpl implements AuthenticationDetailServ
     }
 
     @Override
+    public AuthenticationDetail regenerateKey(AuthenticationDetail authenticationDetail)
+            throws NoSuchAlgorithmException, DataEncryptionException {
+        authenticationDetail.setApiKey(aesEncryptionUtil.encryptData(GenericUtil.generateKey(256),
+                aesEncryptionUtil.getEncryptionKey()));
+        return detailRepository.saveAndFlush(authenticationDetail);
+    }
+
+    @Override
     public AuthenticationDetail decrypt(AuthenticationDetail authenticationDetail) throws DataEncryptionException {
         authenticationDetail.setApiKey(aesEncryptionUtil.decryptData(authenticationDetail.getApiKey(),
                 aesEncryptionUtil.getEncryptionKey()));

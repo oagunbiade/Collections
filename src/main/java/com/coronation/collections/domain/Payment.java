@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 
@@ -45,8 +44,8 @@ public class Payment implements Serializable{
 	@Column(nullable = false)
 	private Boolean deleted = Boolean.FALSE;
 
-	@Column(name = "retry_count")
-	private int retryCount;
+	@Column(name = "try_count")
+	private int tryCount;
 
 	@Column(name = "notification_status", nullable = false)
 	private Boolean notificationStatus = Boolean.FALSE;
@@ -192,12 +191,12 @@ public class Payment implements Serializable{
 		this.createdBy = createdBy;
 	}
 
-	public int getRetryCount() {
-		return retryCount;
+	public int getTryCount() {
+		return tryCount;
 	}
 
-	public void setRetryCount(int retryCount) {
-		this.retryCount = retryCount;
+	public void setTryCount(int tryCount) {
+		this.tryCount = tryCount;
 	}
 
 	public Boolean getEditMode() {
@@ -254,6 +253,11 @@ public class Payment implements Serializable{
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public String getNarration() {
+		return String.format("Collections for Product: %s, by: %s, to: %s",
+				product.getName(), distributor.getName(), merchant.getMerchantName());
 	}
 
 	@Override

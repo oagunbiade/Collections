@@ -13,4 +13,5 @@ public interface DistributorAccountRepository extends JpaRepository<DistributorA
         QuerydslPredicateExecutor<DistributorAccount> {
     List<DistributorAccount> findByDistributorId(Long id);
     DistributorAccount findByAccountId(Long accountId);
+    DistributorAccount findByAccount_AccountNumber(String accountNumber);
 }

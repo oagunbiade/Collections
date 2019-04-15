@@ -20,7 +20,7 @@ public interface ProductService {
     Product updateAccount(Product product, MerchantAccount merchantAccount);
     Product approveProduct(Product product, ApprovalDto approvalDto);
     Product revert(Product product);
-    Product approveAccount(Product product, MerchantAccount merchantAccount, ApprovalDto approvalDto);
+    Product approveAccount(Product product, ApprovalDto approvalDto);
     Product delete(Product product);
     List<Product> findByMerchantId(Long merchantId);
     List<Product> merchantDistributorProducts(Long merchantId, Long distributorId);

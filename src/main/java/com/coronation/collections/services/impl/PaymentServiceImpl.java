@@ -10,16 +10,17 @@ import java.util.*;
 
 import com.coronation.collections.domain.*;
 import com.coronation.collections.domain.enums.PaymentStatus;
-import com.coronation.collections.dto.AmountReport;
-import com.coronation.collections.dto.ApprovalDto;
-import com.coronation.collections.dto.CountReport;
+import com.coronation.collections.dto.*;
+import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.exception.InvalidDataException;
 import com.coronation.collections.repositories.InvalidPaymentRepository;
 import com.coronation.collections.services.DistributorService;
 import com.coronation.collections.services.PaymentService;
 import com.coronation.collections.services.ProductService;
+import com.coronation.collections.util.Constants;
 import com.coronation.collections.util.GenericUtil;
 import com.coronation.collections.util.JsonConverter;
+import com.coronation.collections.util.Utilities;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -27,6 +28,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.coronation.collections.repositories.PaymentRepository;
 
@@ -36,13 +39,16 @@ public class PaymentServiceImpl implements PaymentService {
 	private DistributorService distributorService;
 	private ProductService productService;
 	private InvalidPaymentRepository invalidPaymentRepository;
+	private Utilities utilities;
 	@Autowired
 	public PaymentServiceImpl(PaymentRepository paymentRepository, DistributorService distributorService,
-							  ProductService productService, InvalidPaymentRepository invalidPaymentRepository) {
+							  ProductService productService, InvalidPaymentRepository invalidPaymentRepository,
+							  Utilities utilities) {
 		this.paymentRepository = paymentRepository;
 		this.distributorService = distributorService;
 		this.productService = productService;
 		this.invalidPaymentRepository = invalidPaymentRepository;
+		this.utilities = utilities;
 	}
 
 	@Override
@@ -135,7 +141,30 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public Payment processPayment(Payment payment) {
-		return null;
+		TransferRequest request = new TransferRequest();
+		request.setUniqueIdentifier(GenericUtil.generateRandomId());
+		request.setCreditAccountNumber(payment.getProduct().getAccount().getAccount().getAccountNumber());
+		request.setDebitAccountNumber(payment.getDistributorAccount().getAccount().getAccountNumber());
+		request.setTranAmount(payment.getAmount());
+		request.setNaration(payment.getNarration());
+		ResponseEntity<TransferResponse> response = utilities.postTransfer(request);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			if (Constants.TRANSFER_RESPONSE_CODE.equals(response.getBody().getResponseCode())) {
+				payment.setStatus(PaymentStatus.PROCESSED);
+			} else {
+				payment.setRejectReason("Transaction failed with response: " +
+						response.getBody().getResponseCode() + " " + response.getBody().getResponseDescription());
+				payment.setStatus(PaymentStatus.FAILED);
+			}
+		} else {
+			payment.setStatus(PaymentStatus.FAILED);
+			payment.setRejectReason("Error occurred during processing with: " + response.getStatusCode().toString());
+		}
+
+		payment.setTryCount(payment.getTryCount() + 1);
+		payment.setModifiedAt(LocalDateTime.now());
+		return paymentRepository.saveAndFlush(payment);
 	}
 
 	@Override
@@ -163,12 +192,12 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public List<Payment> findMerchantDuePayments(Long merchantId, LocalDate localDate) {
-		return paymentRepository.findByMerchantIdAndDueDate(merchantId, localDate);
+		return paymentRepository.findMerchantDuePayments(merchantId, localDate);
 	}
 
 	@Override
-	public List<Payment> findDistributorDuePayments(Long distributorId, LocalDate localDate) {
-		return paymentRepository.findByDistributorIdAndDueDate(distributorId, localDate);
+	public List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDate localDate) {
+		return paymentRepository.findDistributorDuePayments(merchantId, distributorId, localDate);
 	}
 
 	@Override
@@ -231,6 +260,8 @@ public class PaymentServiceImpl implements PaymentService {
 			product = productService.findByCode(invalidPayment.getProductCode().trim());
 			if (product == null) {
 				builder.append("Invalid product code | ");
+			} else if (!product.getMerchant().equals(merchant)) {
+				builder.append("Product belongs to a different merchant");
 			}
 		}
 		if (invalidPayment.getRfpCode() == null || invalidPayment.getRfpCode().isEmpty()) {
@@ -311,6 +342,24 @@ public class PaymentServiceImpl implements PaymentService {
 		return invalidPaymentRepository.findByMerchantIdAndValidatedFalse(merchantId);
 	}
 
+	@Override
+	public TransferResponse transfer(TransferRequest transferRequest) throws ApiException {
+		ResponseEntity<TransferResponse> response = utilities.postTransfer(transferRequest);
+		if (response.getStatusCode() != HttpStatus.OK) {
+			ApiException exception = new ApiException("An error occurred while processing payment");
+			exception.setStatusCode(response.getStatusCode().value());
+			throw exception;
+		} else {
+			return response.getBody();
+		}
+	}
+
+	@Override
+	public Payment setDistributorAccount(Payment payment, DistributorAccount account) {
+		payment.setDistributorAccount(account);
+		payment.setModifiedAt(LocalDateTime.now());
+		return paymentRepository.saveAndFlush(payment);
+	}
 
 	private void sumPayments(List<Payment> payments, final AmountReport amountReport, final CountReport countReport) {
 		countReport.setAll(payments.size());

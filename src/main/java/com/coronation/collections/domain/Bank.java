@@ -17,7 +17,7 @@ public class Bank {
     private Long id;
     @NotNull
     @Column(unique = true)
-    private String bankName;
+    private String name;
     @NotNull
     @Column(unique = true)
     private String bankCode;
@@ -38,12 +38,12 @@ public class Bank {
         this.id = id;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getName() {
+        return name;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getBankCode() {

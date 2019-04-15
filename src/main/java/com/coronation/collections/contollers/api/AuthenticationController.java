@@ -1,10 +1,11 @@
 package com.coronation.collections.contollers.api;
 
-
 import com.coronation.collections.dto.AuthToken;
 import com.coronation.collections.dto.LoginUser;
 import com.coronation.collections.security.TokenProvider;
+import com.coronation.collections.util.GenericUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,13 @@ public class AuthenticationController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+        if (GenericUtil.isStaffEmail(loginUser.getUsername())) {
+            if (staffAuthenticated(loginUser)) {
+                loginUser.setPassword(loginUser.getUsername());
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        }
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginUser.getUsername(),
@@ -37,6 +45,10 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtTokenUtil.generateToken(authentication);
         return ResponseEntity.ok(new AuthToken(token));
+    }
+
+    private boolean staffAuthenticated(LoginUser loginUser) {
+        return true;
     }
 
 }

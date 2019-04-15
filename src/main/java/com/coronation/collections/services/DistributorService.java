@@ -32,4 +32,5 @@ public interface DistributorService {
     MerchantDistributor findByMerchantIdAndRfpCode(Long merchantId, String rfpCode);
     List<MerchantDistributor> findByMerchantId(Long id);
     Optional<DistributorAccount> getDefaultAccount(Collection<DistributorAccount> distributorAccounts);
+    DistributorAccount findByAccountNumber(String accountNumber);
 }

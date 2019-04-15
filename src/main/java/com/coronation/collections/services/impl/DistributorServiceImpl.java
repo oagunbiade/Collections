@@ -205,4 +205,9 @@ public class DistributorServiceImpl implements DistributorService {
     public Optional<DistributorAccount> getDefaultAccount(Collection<DistributorAccount> distributorAccounts) {
         return distributorAccounts.stream().filter(d -> d.getDefaultAccount()).findFirst();
     }
+
+    @Override
+    public DistributorAccount findByAccountNumber(String accountNumber) {
+        return distributorAccountRepository.findByAccount_AccountNumber(accountNumber);
+    }
 }

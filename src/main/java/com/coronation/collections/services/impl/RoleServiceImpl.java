@@ -33,8 +33,15 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
+	public Role update(Role prev, Role current) {
+		prev.setName(current.getName());
+		prev.setModifiedAt(LocalDateTime.now());
+		return roleRepository.saveAndFlush(prev);
+	}
+
+	@Override
 	public Role findByName(String name) {
-		return roleRepository.findByRoleName(name);
+		return roleRepository.findByName(name);
 	}
 
 	@Override

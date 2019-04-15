@@ -3,11 +3,17 @@ package com.coronation.collections.services.impl;
 import com.coronation.collections.domain.Account;
 import com.coronation.collections.domain.User;
 import com.coronation.collections.domain.enums.GenericStatus;
+import com.coronation.collections.dto.AccountDetailRequest;
+import com.coronation.collections.dto.AccountDetailResponse;
 import com.coronation.collections.dto.ApprovalDto;
+import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.repositories.AccountRepository;
 import com.coronation.collections.services.AccountService;
 import com.coronation.collections.util.JsonConverter;
+import com.coronation.collections.util.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,10 +25,12 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
+    private Utilities utilities;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, Utilities utilities) {
         this.accountRepository = accountRepository;
+        this.utilities = utilities;
     }
 
     @Override
@@ -68,17 +76,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account findByAccountName(String accountName) {
-        return accountRepository.findByAccountName(accountName);
-    }
-
-    @Override
     public List<Account> findByBvn(String bvn) {
         return accountRepository.findByBvn(bvn);
     }
 
     @Override
     public Account findByAccountNumber(String accountNumber) {
-        return findByAccountNumber(accountNumber);
+        return accountRepository.findByAccountNumber(accountNumber);
+    }
+
+    @Override
+    public AccountDetailResponse fetchAccountDetails(String accountNumber) throws ApiException {
+        AccountDetailRequest accountDetailRequest = new AccountDetailRequest(accountNumber);
+        ResponseEntity<AccountDetailResponse> response = utilities.getAccountDetails(accountDetailRequest);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            ApiException exception = new ApiException("An error occurred while fetching account");
+            exception.setStatusCode(response.getStatusCode().value());
+            throw exception;
+        } else {
+            return response.getBody();
+        }
     }
 }

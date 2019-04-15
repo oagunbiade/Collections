@@ -2,6 +2,7 @@ package com.coronation.collections.services.impl;
 
 import com.coronation.collections.domain.Task;
 import com.coronation.collections.domain.User;
+import com.coronation.collections.domain.enums.TaskType;
 import com.coronation.collections.repositories.TaskRepository;
 import com.coronation.collections.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task update(Task prev, Task current) {
+    public Task edit(Task prev, Task current) {
         prev.setName(current.getName());
         prev.setModifiedAt(LocalDateTime.now());
         return taskRepository.saveAndFlush(prev);
@@ -45,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findByName(String name) {
-        return taskRepository.findByNameEquals(name);
+    public Task findByName(TaskType name) {
+        return taskRepository.findByName(name);
     }
 }

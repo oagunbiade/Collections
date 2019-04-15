@@ -32,7 +32,7 @@ public class BankServiceImpl implements BankService {
     @Override
     public Bank edit(Bank prev, Bank current) {
         prev.setBankCode(current.getBankCode());
-        prev.setBankName(current.getBankName());
+        prev.setName(current.getName());
         prev.setSortCode(current.getSortCode());
         prev.setModifiedAt(LocalDateTime.now());
         return bankRepository.saveAndFlush(prev);
@@ -50,7 +50,7 @@ public class BankServiceImpl implements BankService {
 
     @Override
     public Bank findByName(String name) {
-        return bankRepository.findByBankName(name);
+        return bankRepository.findByName(name);
     }
 
     @Override

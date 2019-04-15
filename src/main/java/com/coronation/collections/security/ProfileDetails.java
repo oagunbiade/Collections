@@ -26,7 +26,7 @@ public class ProfileDetails implements UserDetails {
 
     private void addAuthorities() {
         for (Task task: user.getRole().getTasks()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + task.getName()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + task.getName().name()));
         }
     }
 
@@ -55,15 +55,15 @@ public class ProfileDetails implements UserDetails {
      * @return the username (never <code>null</code>)
      */
     public String getUsername() {
-        return user.getUserName();
+        return user.getEmail();
     };
 
     public String getFirstName() {
-        return user.getUserProfile().getFirstName();
+        return user.getFirstName();
     }
 
     public String getLastName() {
-        return user.getUserProfile().getLastName();
+        return user.getLastName();
     }
     /**
      * Indicates whether the user's account has expired. An expired account cannot be
@@ -104,7 +104,7 @@ public class ProfileDetails implements UserDetails {
      * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
      */
     public boolean isEnabled() {
-        return true;
+        return !user.getFlagged() && !user.getDeleted();
     };
 
     public User toUser() {

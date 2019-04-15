@@ -13,6 +13,7 @@ public interface UserService {
 	Page<User> listAll(BooleanExpression expression, Pageable pageable);
     User save(User user);
     User findByEmail(String email);
+	User findByPhone(String phone);
 	User findById(Long userId);
     User update(User prev, User current);
     User delete(User user);

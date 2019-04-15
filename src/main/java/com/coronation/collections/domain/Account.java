@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Created by Toyin on 4/5/19.
  */
-@Entity  
+@Entity
 @Table(name = "accounts")
 public class Account {
     @Id
@@ -18,12 +18,17 @@ public class Account {
     @NotNull
     @Column(unique = true)
     private String accountNumber;
-    @NotNull
     @Column
     private String accountName;
     @NotNull
     @Column
     private String bvn;
+    @NotNull
+    @Column
+    private String currency;
+    @NotNull
+    @Column
+    private String schemeCode;
     @ManyToOne
     @JoinColumn(name = "bank_id", nullable = false)
     private Bank bank;
@@ -74,6 +79,22 @@ public class Account {
 
     public void setBvn(String bvn) {
         this.bvn = bvn;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getSchemeCode() {
+        return schemeCode;
+    }
+
+    public void setSchemeCode(String schemeCode) {
+        this.schemeCode = schemeCode;
     }
 
     public Bank getBank() {

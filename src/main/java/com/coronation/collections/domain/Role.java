@@ -16,7 +16,7 @@ public class Role {
 
   	@NotNull
   	@Column(name = "role_name", unique = true)
-	private String roleName;
+	private String name;
 		
 	@Column(name = "role_description")
 	private String roleDescription;
@@ -47,12 +47,12 @@ public class Role {
 		this.id = id;
 	}
 
-	public String getRoleName() {
-		return roleName;
+	public String getName() {
+		return name;
 	}
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getRoleDescription() {
