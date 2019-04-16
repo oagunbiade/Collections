@@ -2,7 +2,7 @@ package com.coronation.collections.services;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.coronation.collections.domain.*;
@@ -19,25 +19,30 @@ public interface PaymentService {
 	Payment findById(Long id);
 	Payment save(Payment payment, Merchant merchant, Product product,
                  DistributorAccount distributorAccount, Distributor distributor, User createdBy);
-	Payment getByReferenceCode(String code);
     Payment update(Payment prevPayment, Payment newPayment);
     Payment approve(Payment payment, ApprovalDto approvalDto);
     Payment revert(Payment payment, ApprovalDto approvalDto);
-    Payment delete(Payment payment);
-    List<Payment> listAllPendingPayments();
+    Payment cancelPayment(Payment payment);
+    Payment confirmPayment(Payment payment);
     Payment processPayment(Payment payment);
     Payment clearAsPayable(Payment payment);
-    List<Payment> findAllDuePayments(LocalDate localDate);
-    void setMerchantAmountReport(Long merchantId, AmountReport amountReport, CountReport countReport);
-    void setDistributorAmountReport
-            (Long distributorId, AmountReport amountReport, CountReport countReport);
-    List<Payment> findMerchantDuePayments(Long merchantId, LocalDate localDate);
-    List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDate localDate);
-    Payment cancelPayment(Payment payment);
+    Payment getByReferenceCode(String code);
+    Payment delete(Payment payment);
+    Payment setDistributorAccount(Payment payment, DistributorAccount account);
+    Payment validatePayment(InvalidPayment invalidPayment, User user) throws InvalidDataException;
     List<InvalidPayment> uploadPayments(InputStream inputStream, Merchant merchant, User user) throws IOException;
-    Payment validatePayment(InvalidPayment invalidPayment, Merchant merchant, User user) throws InvalidDataException;
-    Payment confirmPayment(Payment payment);
+    InvalidPayment findInvalidPaymentById(Long id);
+    List<Payment> listAllPendingPayments();
+    List<Payment> findAllDuePayments(LocalDateTime dueDate);
+    void setMerchantAmountReport(Long merchantId, PaymentReport paymentReport);
+    void setDistributorAmountReport
+            (Long distributorId, PaymentReport paymentReport);
+    List<Payment> findMerchantDuePayments(Long merchantId, LocalDateTime from, LocalDateTime to);
+    List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDateTime from, LocalDateTime to);
     List<InvalidPayment> merchantInvalidPayments(Long merchantId);
     TransferResponse transfer(TransferRequest transferRequest) throws ApiException;
-    Payment setDistributorAccount(Payment payment, DistributorAccount account);
+    List<Payment> findMerchantDistributorPayments(Long merchantId, Long distributorId);
+
+    void sumPayments(List<Payment> payments,
+                            final PaymentReport paymentReport);
 }

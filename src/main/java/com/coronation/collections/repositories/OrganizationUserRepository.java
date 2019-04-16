@@ -12,4 +12,5 @@ import java.util.List;
 public interface OrganizationUserRepository extends JpaRepository<OrganizationUser, Long>,
         QuerydslPredicateExecutor<OrganizationUser> {
     List<OrganizationUser> findByOrganizationId(Long id);
+    OrganizationUser findByUserId(Long id);
 }

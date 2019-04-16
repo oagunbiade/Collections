@@ -14,6 +14,7 @@ public class AmountReport {
     private BigDecimal initiated = new BigDecimal("0.00");
     private BigDecimal invalid = new BigDecimal("0.00");
     private BigDecimal rejected = new BigDecimal("0.00");
+    private BigDecimal dueToday = new BigDecimal("0.00");
 
     public BigDecimal getAll() {
         return all;
@@ -77,5 +78,13 @@ public class AmountReport {
 
     public void setRejected(BigDecimal rejected) {
         this.rejected = rejected;
+    }
+
+    public BigDecimal getDueToday() {
+        return dueToday;
+    }
+
+    public void setDueToday(BigDecimal dueToday) {
+        this.dueToday = dueToday;
     }
 }

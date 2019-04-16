@@ -16,7 +16,7 @@ public class DistributorUser {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "distributor_id")
     private Distributor distributor;
     @Column(name="created_at")

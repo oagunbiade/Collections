@@ -22,7 +22,7 @@ public class MerchantDistributor {
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "distributor_id")
     private Distributor distributor;
     @Column(name = "rfp_code")

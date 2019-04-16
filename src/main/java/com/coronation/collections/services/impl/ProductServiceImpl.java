@@ -149,4 +149,15 @@ public class ProductServiceImpl implements ProductService {
 	public Product findByCode(String code) {
 		return productRepository.findByCode(code);
 	}
+
+	@Override
+	public Product deactivateOrActivate(Product product) {
+		if (product.getStatus().equals(GenericStatus.ACTIVE)) {
+			product.setStatus(GenericStatus.DEACTIVATED);
+		} else {
+			product.setStatus(GenericStatus.ACTIVE);
+		}
+		product.setModifiedAt(LocalDateTime.now());
+		return productRepository.saveAndFlush(product);
+	}
 }

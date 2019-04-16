@@ -14,23 +14,30 @@ import java.util.Optional;
 public interface DistributorService {
     Distributor create(Distributor distributor);
     Distributor approve(Distributor distributor, ApprovalDto approvalDto);
-    MerchantDistributor addToMerchant(Distributor distributor, Merchant merchant, StringValue stringValue);
+    MerchantDistributor addToMerchant(Distributor distributor, Merchant merchant, String rfpCode);
     MerchantDistributor deleteDistributor(MerchantDistributor merchantDistributor);
     MerchantDistributor approveMerchantDistributor(MerchantDistributor merchantDistributor, ApprovalDto approvalDto);
     MerchantDistributor editMerchantDistributor(MerchantDistributor prev, MerchantDistributor current);
+    MerchantDistributor findByMerchantDistributorId(Long id);
     Distributor update(Distributor prev, Distributor current);
     Distributor findByBvn(String bvn);
     Distributor findByName(String name);
+    Distributor findById(Long id);
+    MerchantDistributor findByMerchantIdAndDistributorId(Long merchantId, Long distributorId);
+    MerchantDistributor findByMerchantIdAndRfpCode(Long merchantId, String rfpCode);
+    List<MerchantDistributor> findByMerchantId(Long id);
+
     DistributorAccount findByAccountId(Long accountId);
     DistributorAccount addAccount(Distributor distributor, Account account, Boolean defaultAccount);
     List<DistributorAccount> distributorAccounts(Long distributorId);
-    DistributorUser findByUserId(Long userId);
-    DistributorUser addUser(User user, Distributor distributor);
-    MerchantDistributor findByMerchantIdAndDistributorId(Long merchantId, Long distributorId);
     Collection<DistributorAccount> setDefaultAccount(Collection<DistributorAccount> accounts,
-                                     DistributorAccount defaultAccount);
-    MerchantDistributor findByMerchantIdAndRfpCode(Long merchantId, String rfpCode);
-    List<MerchantDistributor> findByMerchantId(Long id);
+                                                     DistributorAccount defaultAccount);
     Optional<DistributorAccount> getDefaultAccount(Collection<DistributorAccount> distributorAccounts);
     DistributorAccount findByAccountNumber(String accountNumber);
+
+    DistributorUser findByUserId(Long userId);
+    DistributorUser addUser(User user, Distributor distributor);
+    List<DistributorUser> distributorUsers(Long id);
+
+    Distributor deactivateOrActivate(Distributor distributor);
 }

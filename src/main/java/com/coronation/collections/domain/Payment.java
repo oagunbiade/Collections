@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -31,9 +30,11 @@ public class Payment implements Serializable{
 	@Column(name = "amount")
 	private BigDecimal amount;
 
+	@ManyToOne
 	@JoinColumn(name = "distributor_id", nullable = false)
 	private Distributor distributor;
 
+	@ManyToOne
 	@JoinColumn(name = "distributor_account_id")
 	private DistributorAccount distributorAccount;
 
@@ -68,10 +69,10 @@ public class Payment implements Serializable{
 	private String comment;
 
 	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@FutureOrPresent
-	@Column(name="created_at")
-	private LocalDate dueDate;
+	@Column(name="due_date")
+	private LocalDateTime dueDate;
 
 	@Column(name="created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
@@ -115,11 +116,11 @@ public class Payment implements Serializable{
 		this.distributorAccount = distributorAccount;
 	}
 
-	public LocalDate getDueDate() {
+	public LocalDateTime getDueDate() {
 		return dueDate;
 	}
 
-	public void setDueDate(LocalDate dueDate) {
+	public void setDueDate(LocalDateTime dueDate) {
 		this.dueDate = dueDate;
 	}
 

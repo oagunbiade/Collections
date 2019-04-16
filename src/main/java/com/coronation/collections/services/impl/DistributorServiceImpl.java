@@ -71,14 +71,14 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
-    public MerchantDistributor addToMerchant(Distributor distributor, Merchant merchant, StringValue stringValue) {
+    public MerchantDistributor addToMerchant(Distributor distributor, Merchant merchant, String rfpCode) {
         MerchantDistributor merchantDistributor = new MerchantDistributor();
         merchantDistributor.setMerchant(merchant);
         merchantDistributor.setDistributor(distributor);
-        if (stringValue.getValue() == null || stringValue.getValue().isEmpty()) {
+        if (rfpCode == null || rfpCode.isEmpty()) {
             merchantDistributor.setRfpCode(distributor.getId().toString());
         } else {
-            merchantDistributor.setRfpCode(stringValue.getValue());
+            merchantDistributor.setRfpCode(rfpCode);
         }
         return merchantDistributorRepository.saveAndFlush(merchantDistributor);
     }
@@ -101,6 +101,7 @@ public class DistributorServiceImpl implements DistributorService {
                 merchantDistributor.setModifiedAt(edit.getCreatedAt());
                 merchantDistributor.setUpdateData(null);
                 merchantDistributor.setRejectReason(null);
+                merchantDistributor.getDistributor().setStatus(GenericStatus.ACTIVE);
             }
             merchantDistributor.setStatus(GenericStatus.ACTIVE);
         } else {
@@ -122,6 +123,11 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
+    public MerchantDistributor findByMerchantDistributorId(Long id) {
+        return merchantDistributorRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public Distributor update(Distributor prev, Distributor current) {
         prev.setEditMode(Boolean.TRUE);
         prev.setUpdateData(JsonConverter.getJson(current));
@@ -136,6 +142,11 @@ public class DistributorServiceImpl implements DistributorService {
     @Override
     public Distributor findByName(String name) {
         return distributorRepository.findByNameEquals(name);
+    }
+
+    @Override
+    public Distributor findById(Long id) {
+        return distributorRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -168,6 +179,11 @@ public class DistributorServiceImpl implements DistributorService {
         distributorUser.setDistributor(distributor);
         distributorUser.setUser(user);
         return distributorUserRepository.saveAndFlush(distributorUser);
+    }
+
+    @Override
+    public List<DistributorUser> distributorUsers(Long id) {
+        return distributorUserRepository.findByDistributorId(id);
     }
 
     @Override
@@ -210,4 +226,16 @@ public class DistributorServiceImpl implements DistributorService {
     public DistributorAccount findByAccountNumber(String accountNumber) {
         return distributorAccountRepository.findByAccount_AccountNumber(accountNumber);
     }
+
+    @Override
+    public Distributor deactivateOrActivate(Distributor distributor) {
+        if (distributor.getStatus().equals(GenericStatus.ACTIVE)) {
+            distributor.setStatus(GenericStatus.DEACTIVATED);
+        } else {
+            distributor.setStatus(GenericStatus.ACTIVE);
+        }
+        distributor.setModifiedAt(LocalDateTime.now());
+        return distributorRepository.saveAndFlush(distributor);
+    }
+
 }

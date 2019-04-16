@@ -32,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.coronation.collections.repositories.PaymentRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -175,29 +176,30 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public List<Payment> findAllDuePayments(LocalDate localDate) {
-		return paymentRepository.findAllDuePayments(localDate);
+	public List<Payment> findAllDuePayments(LocalDateTime dueDate) {
+		return paymentRepository.findAllDuePayments(dueDate);
 	}
 
 	@Override
-	public void setMerchantAmountReport(Long merchantId, AmountReport amountReport, CountReport countReport) {
-		sumPayments(paymentRepository.findByMerchantId(merchantId), amountReport, countReport);
+	public void setMerchantAmountReport(Long merchantId, PaymentReport paymentReport) {
+		sumPayments(paymentRepository.findByMerchantId(merchantId), paymentReport);
 	}
 
 	@Override
 	public void setDistributorAmountReport
-			(Long distributorId, AmountReport amountReport, CountReport countReport) {
-		sumPayments(paymentRepository.findByDistributorId(distributorId), amountReport, countReport);
+			(Long distributorId, PaymentReport paymentReport) {
+		sumPayments(paymentRepository.findByDistributorId(distributorId), paymentReport);
 	}
 
 	@Override
-	public List<Payment> findMerchantDuePayments(Long merchantId, LocalDate localDate) {
-		return paymentRepository.findMerchantDuePayments(merchantId, localDate);
+	public List<Payment> findMerchantDuePayments(Long merchantId, LocalDateTime from, LocalDateTime to) {
+		return paymentRepository.findMerchantDuePayments(merchantId, from, to);
 	}
 
 	@Override
-	public List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDate localDate) {
-		return paymentRepository.findDistributorDuePayments(merchantId, distributorId, localDate);
+	public List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId,
+													LocalDateTime from, LocalDateTime to) {
+		return paymentRepository.findDistributorDuePayments(merchantId, distributorId, from, to);
 	}
 
 	@Override
@@ -232,9 +234,10 @@ public class PaymentServiceImpl implements PaymentService {
 			invalidPayment.setRfpCode(row.getCell(1).getStringCellValue());
 			invalidPayment.setProductCode(row.getCell(0).getStringCellValue());
 			invalidPayment.setComment(row.getCell(5).getStringCellValue());
+			invalidPayment.setMerchant(merchant);
 
 			try {
-				validatePayment(invalidPayment, merchant, user);
+				validatePayment(invalidPayment, user);
 			} catch (InvalidDataException e) {
 				invalidPayment.setRejectReason(e.getMessage());
 				invalidPayment = invalidPaymentRepository.saveAndFlush(invalidPayment);
@@ -245,14 +248,15 @@ public class PaymentServiceImpl implements PaymentService {
 		return payments;
 	}
 
+	@Transactional
 	@Override
-	public Payment validatePayment(InvalidPayment invalidPayment, Merchant merchant, User user) throws InvalidDataException {
+	public Payment validatePayment(InvalidPayment invalidPayment, User user) throws InvalidDataException {
 		StringBuilder builder = new StringBuilder();
 		BigDecimal amount = null;
 		Product product = null;
 		MerchantDistributor distributor = null;
 		int units = 0;
-		LocalDate dueDate = null;
+		LocalDateTime dueDate = null;
 		DistributorAccount distributorAccount = null;
 		if (invalidPayment.getProductCode() == null || invalidPayment.getProductCode().isEmpty()) {
 			builder.append("No product code | ");
@@ -260,7 +264,7 @@ public class PaymentServiceImpl implements PaymentService {
 			product = productService.findByCode(invalidPayment.getProductCode().trim());
 			if (product == null) {
 				builder.append("Invalid product code | ");
-			} else if (!product.getMerchant().equals(merchant)) {
+			} else if (!product.getMerchant().equals(invalidPayment.getMerchant())) {
 				builder.append("Product belongs to a different merchant");
 			}
 		}
@@ -268,12 +272,14 @@ public class PaymentServiceImpl implements PaymentService {
 			builder.append("No rfp code | ");
 		} else {
 			distributor = distributorService.
-					findByMerchantIdAndRfpCode(merchant.getId(), invalidPayment.getRfpCode().trim());
+					findByMerchantIdAndRfpCode(invalidPayment.getMerchant().getId(), invalidPayment.getRfpCode().trim());
 			if (distributor == null) {
 				builder.append("Invalid rfp code | ");
 			} else {
+				List<DistributorAccount> distributorAccounts =
+						distributorService.distributorAccounts(distributor.getId());
 				distributorAccount = distributorService.getDefaultAccount
-						(distributor.getDistributor().getDistributorAccounts()).orElse(null);
+						(distributorAccounts).orElse(null);
 				if (distributorAccount == null) {
 					builder.append("No account found for distributor | ");
 				}
@@ -310,8 +316,8 @@ public class PaymentServiceImpl implements PaymentService {
 			builder.append("No due date specified | ");
 		} else {
 			try {
-				dueDate = LocalDate.parse(invalidPayment.getDueDate().trim());
-				if (dueDate.isBefore(LocalDate.now())) {
+				dueDate = GenericUtil.dateTimeFromString(invalidPayment.getDueDate().trim());
+				if (dueDate.isBefore(LocalDateTime.now())) {
 					builder.append("Due date is in the past | ");
 				}
 			} catch (DateTimeParseException dte) {
@@ -326,7 +332,12 @@ public class PaymentServiceImpl implements PaymentService {
 			payment.setDueDate(dueDate);
 			payment.setAmount(amount);
 			payment.setNumberOfUnits(units);
-			return save(payment, merchant, product, distributorAccount, distributor.getDistributor(), user);
+			payment = save(payment, invalidPayment.getMerchant(), product, distributorAccount,
+					distributor.getDistributor(), user);
+			invalidPayment.setValidated(Boolean.TRUE);
+			invalidPayment.setModifiedAt(LocalDateTime.now());
+			invalidPaymentRepository.saveAndFlush(invalidPayment);
+			return payment;
 		}
 	}
 
@@ -355,14 +366,28 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
+	public List<Payment> findMerchantDistributorPayments(Long merchantId, Long distributorId) {
+		return paymentRepository.findByDistributorIdAndMerchantId(distributorId, merchantId);
+	}
+
+	@Override
 	public Payment setDistributorAccount(Payment payment, DistributorAccount account) {
 		payment.setDistributorAccount(account);
 		payment.setModifiedAt(LocalDateTime.now());
 		return paymentRepository.saveAndFlush(payment);
 	}
 
-	private void sumPayments(List<Payment> payments, final AmountReport amountReport, final CountReport countReport) {
+	@Override
+	public InvalidPayment findInvalidPaymentById(Long id) {
+		return invalidPaymentRepository.findById(id).orElse(null);
+	}
+
+	public void sumPayments(List<Payment> payments, final PaymentReport paymentReport) {
+		CountReport countReport = paymentReport.getCountReport();
+		AmountReport amountReport = paymentReport.getAmountReport();
 		countReport.setAll(payments.size());
+		List<PaymentStatus> excludeStatuses =
+				Arrays.asList(PaymentStatus.PROCESSED, PaymentStatus.CANCELED, PaymentStatus.REJECTED);
 		payments.forEach(p -> {
 			amountReport.setAll(amountReport.getApproved().add(p.getAmount()));
 			if (p.getStatus().equals(PaymentStatus.APPROVED)) {
@@ -386,6 +411,10 @@ public class PaymentServiceImpl implements PaymentService {
 			} else if (p.getStatus().equals(PaymentStatus.REJECTED)) {
 				amountReport.setRejected(amountReport.getRejected().add(p.getAmount()));
 				countReport.setRejected(countReport.getRejected() + 1);
+			}
+			if (p.getDueDate().toLocalDate().isEqual(LocalDate.now()) && !excludeStatuses.contains(p.getStatus())) {
+				countReport.setDueToday(countReport.getDueToday() + 1);
+				amountReport.setDueToday(amountReport.getDueToday().add(p.getAmount()));
 			}
 		});
 	}

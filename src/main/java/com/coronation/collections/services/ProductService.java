@@ -26,4 +26,5 @@ public interface ProductService {
     List<Product> merchantDistributorProducts(Long merchantId, Long distributorId);
     Product findByName(String name);
     Product findByCode(String code);
+    Product deactivateOrActivate(Product product);
 }

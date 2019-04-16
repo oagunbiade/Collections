@@ -21,12 +21,11 @@ public class MerchantAccount {
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "account_id")
     private Account account;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private GenericStatus status = GenericStatus.INACTIVE;
+    @Column(columnDefinition = "TEXT")
+    private String rejectReason;
     @Column(nullable = false)
     private Boolean deleted = Boolean.FALSE;
     @Column(name="created_at")
@@ -50,12 +49,12 @@ public class MerchantAccount {
         this.merchant = merchant;
     }
 
-    public GenericStatus getStatus() {
-        return status;
+    public String getRejectReason() {
+        return rejectReason;
     }
 
-    public void setStatus(GenericStatus status) {
-        this.status = status;
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 
     public Account getAccount() {

@@ -4,11 +4,13 @@ import com.coronation.collections.domain.*;
 import com.coronation.collections.domain.enums.GenericStatus;
 import com.coronation.collections.services.DistributorService;
 import com.coronation.collections.services.MerchantService;
+import com.coronation.collections.services.OrganizationService;
 import org.springframework.util.Base64Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -116,13 +118,14 @@ public class GenericUtil {
         }
     }
 
-    public static boolean isProductValid(Product product) {
-        return !product.getDeleted() && product.getStatus().equals(GenericStatus.ACTIVE);
+    public static boolean isDistributorUser(Distributor distributor, User user,
+                                            DistributorService distributorService) {
+        DistributorUser distributorUser = distributorService.findByUserId(user.getId());
+        return distributorUser != null && distributorUser.getDistributor().equals(distributor);
     }
 
-    public static boolean isMerchantAccountValid(MerchantAccount account) {
-        return !account.getDeleted() && account.getStatus().equals(GenericStatus.ACTIVE) &&
-                isAccountValid(account.getAccount());
+    public static boolean isProductValid(Product product) {
+        return !product.getDeleted() && product.getStatus().equals(GenericStatus.ACTIVE);
     }
 
     public static boolean isMerchantValid(Merchant merchant) {
@@ -131,14 +134,23 @@ public class GenericUtil {
                merchant.getOrganization().getStatus().equals(GenericStatus.ACTIVE);
     }
 
-    public static boolean isAccountValid(Account account) {
-        return !account.getDeleted() &&
-            account.getStatus().equals(GenericStatus.ACTIVE);
+    public static boolean isMerchantUser(Merchant merchant, User user, MerchantService merchantService) {
+        MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
+        return merchantUser != null && merchantUser.getMerchant().equals(merchant);
     }
 
-    public static boolean isMerchantProduct(Product product, User user, MerchantService merchantService) {
-        MerchantUser merchantUser = merchantService.findByMerchantUserId(user.getId());
-        return merchantUser != null && merchantUser.getMerchant().equals(product.getMerchant());
+    public static boolean isOrganizationUser(Organization organization, User user,
+                                             OrganizationService organizationService) {
+        OrganizationUser organizationUser = organizationService.findByUserId(user.getId());
+        return organizationUser != null && organizationUser.getOrganization().equals(organization);
+    }
+
+    public static boolean isMerchantDistributorValid(MerchantDistributor merchantDistributor) {
+        return !merchantDistributor.getDeleted() && merchantDistributor.getStatus().equals(GenericStatus.ACTIVE);
+    }
+
+    public static boolean isDistributorValid(Distributor distributor) {
+        return !distributor.getDeleted() && distributor.getStatus().equals(GenericStatus.ACTIVE);
     }
 
     public static LocalDateTime[] getDateRange(LocalDateTime from, LocalDateTime to) {
@@ -151,6 +163,11 @@ public class GenericUtil {
         from = GenericUtil.truncateTime(from);
         to = GenericUtil.ceilTime(to);
         return new LocalDateTime[] {from, to};
+    }
+
+    public static LocalDateTime dateTimeFromString(String dateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        return LocalDateTime.parse(dateStr, formatter);
     }
 
     private static final String MERCHANT_ROLE_PREFIX = "MERCHANT";

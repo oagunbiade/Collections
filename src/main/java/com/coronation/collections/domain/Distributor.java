@@ -31,12 +31,6 @@ public class Distributor {
     @NotNull
     @Column(unique = true)
     private String phoneNumber;
-    @OneToMany( fetch = FetchType.EAGER)
-    @JoinColumn(name = "distributor_id")
-    private Set<DistributorAccount> distributorAccounts;
-    @OneToMany( fetch = FetchType.EAGER)
-    @JoinColumn(name = "distributor_id")
-    private Set<DistributorUser> distributorUsers;
     @Column(columnDefinition = "TEXT")
     private String comment;
     @NotNull
@@ -57,6 +51,9 @@ public class Distributor {
     private LocalDateTime createdAt = LocalDateTime.now();
     @Column(name="modified_at")
     private LocalDateTime modifiedAt = LocalDateTime.now();
+
+    @Transient
+    private String rfpCode;
 
     public Long getId() {
         return id;
@@ -88,14 +85,6 @@ public class Distributor {
 
     public void setBvn(String bvn) {
         this.bvn = bvn;
-    }
-
-    public Set<DistributorAccount> getDistributorAccounts() {
-        return distributorAccounts;
-    }
-
-    public void setDistributorAccounts(Set<DistributorAccount> distributorAccounts) {
-        this.distributorAccounts = distributorAccounts;
     }
 
     public String getEmail() {
@@ -170,13 +159,7 @@ public class Distributor {
         this.comment = comment;
     }
 
-    public Set<DistributorUser> getDistributorUsers() {
-        return distributorUsers;
-    }
 
-    public void setDistributorUsers(Set<DistributorUser> distributorUsers) {
-        this.distributorUsers = distributorUsers;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -192,6 +175,14 @@ public class Distributor {
 
     public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public String getRfpCode() {
+        return rfpCode;
+    }
+
+    public void setRfpCode(String rfpCode) {
+        this.rfpCode = rfpCode;
     }
 
     @Override

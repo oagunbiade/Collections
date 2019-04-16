@@ -29,10 +29,6 @@ public class Merchant {
 	@Column(name = "email", unique = true)
 	private String email;
 
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "merchant_id")
-	private Set<MerchantUser> merchantUsers;
-
 	@NotNull
 	@Pattern(regexp="(\\+)?[0-9]{11,20}$")
 	@Column(name = "phone", unique = true)
@@ -59,14 +55,6 @@ public class Merchant {
 
 	@Column(name="modified_at")
 	private LocalDateTime modifiedAt = LocalDateTime.now();
-
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "merchant_id")
-	private Set<Product> products;
-
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "merchant_id")
-	private Set<MerchantAccount> merchantAccounts;
 
 	@ManyToOne
 	@JoinColumn(name = "organization_id")
@@ -163,14 +151,6 @@ public class Merchant {
 		this.deleted = deleted;
 	}
 
-	public Set<MerchantUser> getMerchantUsers() {
-		return merchantUsers;
-	}
-
-	public void setMerchantUsers(Set<MerchantUser> merchantUsers) {
-		this.merchantUsers = merchantUsers;
-	}
-
 	public AuthenticationDetail getAuthenticationDetail() {
 		return authenticationDetail;
 	}
@@ -225,22 +205,6 @@ public class Merchant {
 
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
-	}
-
-	public Set<Product> getProducts() {
-		return products;
-	}
-
-	public void setProducts(Set<Product> products) {
-		this.products = products;
-	}
-
-	public Set<MerchantAccount> getMerchantAccounts() {
-		return merchantAccounts;
-	}
-
-	public void setMerchantAccounts(Set<MerchantAccount> merchantAccounts) {
-		this.merchantAccounts = merchantAccounts;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.coronation.collections.bootstrap;
 import java.util.List;
 
 import com.coronation.collections.domain.*;
+import com.coronation.collections.domain.enums.TaskType;
 import com.coronation.collections.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,25 +31,22 @@ public class UserLoader implements ApplicationListener<ContextRefreshedEvent> {
 	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		List<User> users = userRepository.findAll();
-		if (users.isEmpty()) {
-			Organization org = new Organization();
-			org.setName("Sahara Energy");
-			User user = new User();
-			user.setEmail("olatunbossun@gmail.com");
-			user.setPassword("password");
-			user = userRepository.save(user);
-			Role role = getOrCreateRole();
-			role = addTaskToRole(role);
-
-			user.setRole(role);
-			userRepository.saveAndFlush(user);
-			log.info("Saved user - id:" + user.getId());
-		}
+//		List<User> users = userRepository.findAll();
+//		if (users.isEmpty()) {
+//			User user = new User();
+//			user.setEmail("olatunbossun@gmail.com");
+//			user.setPassword("password");
+//			user = userRepository.save(user);
+//			Role role = getOrCreateRole();
+//			role = addTaskToRole(role);
+//			user.setRole(role);
+//			userRepository.saveAndFlush(user);
+//			log.info("Saved user - id:" + user.getId());
+//		}
 	}
 
 	private Role getOrCreateRole() {
-		Role role = roleRepository.findByRoleName("Admin");
+		Role role = roleRepository.findByName("Admin");
 		if (role == null) {
 			role = new Role();
 			role.setName("Admin");
@@ -60,7 +58,7 @@ public class UserLoader implements ApplicationListener<ContextRefreshedEvent> {
 	private Role addTaskToRole(Role role) {
 		if (role.getTasks().isEmpty()) {
 			Task task = new Task();
-			task.setName("CREATE_USER");
+			task.setName(TaskType.CREATE_USER);
 			task = taskRepository.saveAndFlush(task);
 			role.getTasks().add(task);
 			role = roleRepository.saveAndFlush(role);

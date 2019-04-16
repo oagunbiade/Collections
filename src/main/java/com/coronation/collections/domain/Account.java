@@ -38,7 +38,7 @@ public class Account {
     private Boolean deleted = Boolean.FALSE;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GenericStatus status = GenericStatus.INACTIVE;
+    private GenericStatus status = GenericStatus.ACTIVE;
     @Column(columnDefinition = "TEXT")
     private String updateData;
     @Column(columnDefinition = "TEXT")

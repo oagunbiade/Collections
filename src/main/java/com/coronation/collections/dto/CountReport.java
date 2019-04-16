@@ -12,6 +12,7 @@ public class CountReport {
     private int initiated;
     private int invalid;
     private int rejected;
+    private int dueToday;
 
     public int getAll() {
         return all;
@@ -75,5 +76,13 @@ public class CountReport {
 
     public void setRejected(int rejected) {
         this.rejected = rejected;
+    }
+
+    public int getDueToday() {
+        return dueToday;
+    }
+
+    public void setDueToday(int dueToday) {
+        this.dueToday = dueToday;
     }
 }

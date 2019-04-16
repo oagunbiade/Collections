@@ -20,8 +20,10 @@ public interface MerchantService {
     MerchantAccount addAccount(Merchant merchant, Account account);
     MerchantAccount deleteAccount(MerchantAccount merchantAccount);
     List<MerchantAccount> merchantAccounts(Long merchantId);
-    MerchantUser findByMerchantUserId(Long userId);
+    MerchantUser findByOrganizationUserId(Long userId);
     MerchantUser addUser(OrganizationUser user, Merchant merchant);
-    List<MerchantUser> findByMerchantUsers(Long id);
+    List<MerchantUser> findMerchantUsers(Long id);
     Merchant addAuthenticationDetail(Merchant merchant, AuthenticationDetail authenticationDetail);
+    MerchantAccount approveAccount(MerchantAccount merchantAccount, ApprovalDto approvalDto);
+    Merchant deactivateOrActivate(Merchant merchant);
 }

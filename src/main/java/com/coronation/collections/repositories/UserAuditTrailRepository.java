@@ -14,7 +14,7 @@ import java.sql.Date;
  */
 public interface UserAuditTrailRepository extends JpaRepository<UserAuditTrail, Long>,
         QuerydslPredicateExecutor<UserAuditTrail> {
-    @Query(value="Select a from UserAuditTrails a where "
+    @Query(value="Select a from UserAuditTrail a where "
             + "a.createdAt between ?1 and ?2")
     Page<UserAuditTrail> findTrailsByDate(Date startDate, Date endDate, Pageable pageRequest);
 }

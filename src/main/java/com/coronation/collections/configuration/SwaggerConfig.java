@@ -24,7 +24,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.coronation.collections.contollers.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.coronation.collections.controllers"))
                 .paths(PathSelectors.any())
                 .build().securitySchemes(Collections.singletonList(apiKey()));
     }

@@ -63,7 +63,7 @@ public class AuthenticationDetailServiceImpl implements AuthenticationDetailServ
 
     @Override
     public AuthenticationDetail disable(AuthenticationDetail authenticationDetail) {
-        authenticationDetail.setStatus(GenericStatus.DISABLED);
+        authenticationDetail.setStatus(GenericStatus.DEACTIVATED);
         authenticationDetail.setModifiedAt(LocalDateTime.now());
         return detailRepository.saveAndFlush(authenticationDetail);
     }

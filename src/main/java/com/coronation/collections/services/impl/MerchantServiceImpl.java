@@ -123,8 +123,8 @@ public class MerchantServiceImpl implements MerchantService {
 	}
 
 	@Override
-	public MerchantUser findByMerchantUserId(Long userId) {
-		return merchantUserRepository.findByMerchantUserId(userId);
+	public MerchantUser findByOrganizationUserId(Long userId) {
+		return merchantUserRepository.findByOrganizationUserId(userId);
 	}
 
 	@Override
@@ -136,13 +136,35 @@ public class MerchantServiceImpl implements MerchantService {
 	}
 
 	@Override
-	public List<MerchantUser> findByMerchantUsers(Long id) {
+	public List<MerchantUser> findMerchantUsers(Long id) {
 		return merchantUserRepository.findByMerchantId(id);
 	}
 
 	@Override
 	public Merchant addAuthenticationDetail(Merchant merchant, AuthenticationDetail authenticationDetail) {
 		merchant.setAuthenticationDetail(authenticationDetail);
+		merchant.setModifiedAt(LocalDateTime.now());
+		return merchantRepository.saveAndFlush(merchant);
+	}
+
+	@Override
+	public MerchantAccount approveAccount(MerchantAccount merchantAccount, ApprovalDto approvalDto) {
+		if (approvalDto.getApprove()) {
+			merchantAccount.getAccount().setStatus(GenericStatus.ACTIVE);
+		} else {
+			merchantAccount.getAccount().setStatus(GenericStatus.REJECTED);
+			merchantAccount.setRejectReason(approvalDto.getReason());
+		}
+		return merchantAccountRepository.saveAndFlush(merchantAccount);
+	}
+
+	@Override
+	public Merchant deactivateOrActivate(Merchant merchant) {
+		if (merchant.getStatus().equals(GenericStatus.ACTIVE)) {
+			merchant.setStatus(GenericStatus.DEACTIVATED);
+		} else {
+			merchant.setStatus(GenericStatus.ACTIVE);
+		}
 		merchant.setModifiedAt(LocalDateTime.now());
 		return merchantRepository.saveAndFlush(merchant);
 	}

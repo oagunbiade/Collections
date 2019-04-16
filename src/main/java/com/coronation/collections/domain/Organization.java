@@ -20,14 +20,6 @@ public class Organization implements Serializable{
 	@NotNull
 	@Column(name = "name", unique = true)
 	private String name;
-	
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "organization_id")
-	private Set<OrganizationUser> organizationUsers;
-	
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "organization_id")
-	private Set<Merchant> merchants;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -50,14 +42,6 @@ public class Organization implements Serializable{
 		this.id = id;
 	}
 
-	public Set<Merchant> getMerchants() {
-		return merchants;
-	}
-
-	public void setMerchants(Set<Merchant> merchants) {
-		this.merchants = merchants;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -72,14 +56,6 @@ public class Organization implements Serializable{
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
-	}
-
-	public Set<OrganizationUser> getOrganizationUsers() {
-		return organizationUsers;
-	}
-
-	public void setOrganizationUsers(Set<OrganizationUser> organizationUsers) {
-		this.organizationUsers = organizationUsers;
 	}
 
 	public GenericStatus getStatus() {
