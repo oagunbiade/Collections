@@ -212,7 +212,7 @@ public class DistributorController {
         }
     }
 
-    @PreAuthorize("hasRole('ADD_ACCOUNT')")
+    @PreAuthorize("hasRole('CREATE_ACCOUNT')")
     @PostMapping("/{id}/accounts")
     public ResponseEntity<DistributorAccount> createAccount(@PathVariable("id") Long id,
             @RequestBody @Valid Account account, BindingResult bindingResult,
@@ -253,7 +253,7 @@ public class DistributorController {
         }
     }
 
-    @PreAuthorize("hasRole('DEFAULT_ACCOUNT')")
+    @PreAuthorize("hasRole('CREATE_ACCOUNT')")
     @PostMapping("/{id}/accounts/{accountId}/default")
     public ResponseEntity<Collection<DistributorAccount>> setDefaultAccount(@PathVariable("id") Long id,
             @PathVariable("accountId") Long accountId, @AuthenticationPrincipal ProfileDetails profileDetails) {

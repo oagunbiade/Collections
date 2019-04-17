@@ -1,6 +1,7 @@
 package com.coronation.collections.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -21,9 +22,9 @@ public class Role {
 	@Column(name = "role_description")
 	private String roleDescription;
 
-	@ManyToMany( fetch = FetchType.EAGER)
+	@ManyToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id")
-	private Set<Task> tasks;
+	private Set<Task> tasks = new HashSet<>();
 		
 	@Column(name = "is_admin")
 	private Boolean isAdmin;

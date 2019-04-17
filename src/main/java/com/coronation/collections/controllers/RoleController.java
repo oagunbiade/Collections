@@ -42,6 +42,7 @@ public class RoleController {
         }
     }
 
+    @PreAuthorize("hasRole('EDIT_ROLE')")
     @PostMapping("/{id}")
     public ResponseEntity<Role> edit(@PathVariable("id") Long id,
                      @RequestBody @Valid Role role, BindingResult bindingResult) {
@@ -85,6 +86,7 @@ public class RoleController {
         }
     }
 
+    @PreAuthorize("hasRole('VIEW_ROLES')")
     public ResponseEntity<List<Role>> listRoles() {
         return ResponseEntity.ok(roleService.findAll());
     }

@@ -39,6 +39,7 @@ public class MerchantController {
         this.authenticationDetailService = authenticationDetailService;
     }
 
+    @PreAuthorize("hasRole('ADD_MERCHANT')")
     @PostMapping("/organizations/{organizationId}")
     public ResponseEntity<Merchant> create(@PathVariable("organizationId") Long organizationId,
                                            @RequestBody @Valid Merchant merchant, BindingResult bindingResult) {
@@ -54,6 +55,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('EDIT_MERCHANT')")
     @PutMapping("/{id}")
     public ResponseEntity<Merchant> edit(@PathVariable("id") Long id, @RequestBody @Valid Merchant merchant,
              BindingResult bindingResult, @AuthenticationPrincipal ProfileDetails profileDetails) {
@@ -75,6 +77,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('DELETE_MERCHANT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Merchant> delete(@PathVariable("id") Long id) {
         Merchant merchant = merchantService.findById(id);
@@ -85,6 +88,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('ACTIVATE_MERCHANT')")
     @PostMapping("/{id}/status")
     public ResponseEntity<Merchant> activateOrDeactivate(@PathVariable("id") Long id) {
         Merchant merchant = merchantService.findById(id);
@@ -95,6 +99,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('APPROVE_MERCHANT')")
     @PostMapping("/{id}/approve")
     public ResponseEntity<Merchant> approve(@PathVariable("id") Long id,
         @RequestBody @Valid ApprovalDto approvalDto, BindingResult bindingResult,
@@ -117,7 +122,7 @@ public class MerchantController {
         }
     }
 
-    @PreAuthorize("hasRole('ADD_ACCOUNT')")
+    @PreAuthorize("hasRole('CREATE_ACCOUNT')")
     @PostMapping("/{id}/accounts")
     public ResponseEntity<MerchantAccount> createAccount(@PathVariable("id") Long id,
             @RequestBody @Valid Account account, BindingResult bindingResult,
@@ -145,6 +150,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('APPROVE_ACCOUNT')")
     @PostMapping("/accounts/{id}/approve")
     public ResponseEntity<MerchantAccount> approveAccount(@PathVariable Long id,
               @RequestBody @Valid ApprovalDto approvalDto, BindingResult bindingResult,
@@ -167,6 +173,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('DELETE_ACCOUNT')")
     @DeleteMapping("/accounts/{id}")
     public ResponseEntity<MerchantAccount> deleteAccount(@PathVariable Long id) {
         MerchantAccount merchantAccount = merchantService.findByAccountId(id);
@@ -177,6 +184,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('VIEW_ACCOUNTS')")
     @GetMapping("/{id}/accounts")
     public ResponseEntity<List<MerchantAccount>> getAccounts(@PathVariable Long id) {
         Merchant merchant = merchantService.findById(id);
@@ -187,6 +195,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('ADD_MERCHANT_USER')")
     @PostMapping("/{id}/users/{userId}")
     public ResponseEntity<MerchantUser> addUser(@PathVariable("id") Long id,
                                                 @PathVariable("userId") Long userId,
@@ -215,6 +224,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('VIEW_USERS')")
     @GetMapping("/{id}/users")
     public ResponseEntity<List<MerchantUser>> getMerchantUsers(@PathVariable("id") Long id) {
         Merchant merchant = merchantService.findById(id);
@@ -225,6 +235,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('MANAGE_API_KEYS')")
     @PostMapping("/{id}/keys")
     public ResponseEntity<AuthenticationDetail> createAuthKeys(@PathVariable("id") Long id,
                                        @AuthenticationPrincipal ProfileDetails profileDetails) {
@@ -252,6 +263,7 @@ public class MerchantController {
         }
     }
 
+    @PreAuthorize("hasRole('MANAGE_API_KEYS')")
     @PostMapping("/{id}/keys/generate")
     public ResponseEntity<AuthenticationDetail> regenerateKey(@PathVariable("id") Long id,
                   @AuthenticationPrincipal ProfileDetails profileDetails) {

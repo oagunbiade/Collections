@@ -107,13 +107,13 @@ public class AccountController {
         }
     }
 
-    @PreAuthorize("hasRole('FETCH_ACCOUNT')")
+    @PreAuthorize("hasRole('VIEW_ACCOUNTS')")
     @GetMapping("/bvn/{bvn}")
     public ResponseEntity<List<Account>> fetchByBvn(@PathVariable("bvn") String bvn) {
         return ResponseEntity.ok(accountService.findByBvn(bvn));
     }
 
-    @PreAuthorize("hasRole('FETCH_ACCOUNT')")
+    @PreAuthorize("hasRole('VIEW_ACCOUNTS')")
     @GetMapping("/number/{accountNumber}")
     public ResponseEntity<Account> fetchByAccountNumber(@PathVariable("accountNumber") String accountNumber) {
         Account account = accountService.findByAccountNumber(accountNumber);
@@ -123,7 +123,7 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @PreAuthorize("hasRole('FETCH_ACCOUNT')")
+    @PreAuthorize("hasRole('VIEW_ACCOUNTS')")
     @GetMapping("/number/{accountNumber}/api")
     public ResponseEntity<Account> fetchByAccountNumberApi(@PathVariable("accountNumber") String accountNumber) {
         try {

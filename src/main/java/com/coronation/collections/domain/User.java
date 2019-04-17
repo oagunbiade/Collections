@@ -40,7 +40,6 @@ public class User {
 	@Column(name = "phone", unique = true)
 	private String phone;
 
-	@NotNull
 	@Column(name = "other_names")
 	private String otherNames;
 
@@ -55,21 +54,17 @@ public class User {
 	@Transient
 	private String pictureBase64;
 
-	@NotNull
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	private GenericStatus status = GenericStatus.ACTIVE;
 
-	@NotNull
 	@Column(nullable = false)
 	private Boolean deleted = Boolean.FALSE;
 
-	@NotNull
-	@Column(name = "flagged")
+	@Column(name = "flagged", nullable = false)
 	private Boolean flagged = Boolean.FALSE;
 
-	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "role_id")
+	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
 	@Column(name="created_at")

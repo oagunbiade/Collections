@@ -5,7 +5,120 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2019-04-16T13:40:04Z</updated>
+  <updated>2019-04-16T15:25:35Z</updated>
+  <entry>
+    <title>Spring Security 5.2.0.M2 Released</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/04/16/spring-security-5-2-0-m2-released" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Josh Cummings</name>
+    </author>
+    <id>tag:spring.io,2019-04-15:3644</id>
+    <updated>2019-04-16T15:25:35Z</updated>
+    <content type="html">&lt;div class="paragraph"&gt;
+&lt;p&gt;On behalf of the community, I’m pleased to announce the release of
+Spring Security 5.2.0.M2! This release includes
+&lt;a href="https://github.com/spring-projects/spring-security/milestone/132?closed=1"&gt;100+
+updates&lt;/a&gt;. You can find the highlights below:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="oauth-2-0"&gt;&lt;a class="anchor" href="#oauth-2-0"&gt;&lt;/a&gt;OAuth 2.0&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6446-gh-6446-a-client-support-for-pkce"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6446-gh-6446-a-client-support-for-pkce"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6446"&gt;gh-6446&lt;/a&gt; - Client Support for PKCE&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;&lt;a href="https://tools.ietf.org/html/rfc7636"&gt;PKCE&lt;/a&gt; isn&amp;#8217;t just for &lt;a href="https://tools.ietf.org/html/rfc8252"&gt;native&lt;/a&gt; or &lt;a href="https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01"&gt;browser-based apps&lt;/a&gt;, but for any time we want to have a public client. Spring Security 5.2 introduces a secure way for backends to authenticate as public clients.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-5350-gh-5350-a-openid-connect-rp-initiated-logout"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-5350-gh-5350-a-openid-connect-rp-initiated-logout"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/5350"&gt;gh-5350&lt;/a&gt; - OpenID Connect RP-Initiated Logout&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-5465-gh-5465-a-ability-to-use-symmetric-keys-with-code-jwtdecoder-code"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-5465-gh-5465-a-ability-to-use-symmetric-keys-with-code-jwtdecoder-code"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/5465"&gt;gh-5465&lt;/a&gt; - Ability to use symmetric keys with &lt;code&gt;JwtDecoder&lt;/code&gt;&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-5937-gh-5397-a-ability-for-code-nimbusreactivejwtdecoder-code-to-take-a-custom-processor"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-5937-gh-5397-a-ability-for-code-nimbusreactivejwtdecoder-code-to-take-a-custom-processor"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/5937"&gt;gh-5397&lt;/a&gt; - Ability for &lt;code&gt;NimbusReactiveJwtDecoder&lt;/code&gt; to take a custom processor&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6513-gh-6513-a-a-href-https-github-com-spring-projects-spring-security-issues-5200-gh-5200-a-support-for-resource-server-token-introspection"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6513-gh-6513-a-a-href-https-github-com-spring-projects-spring-security-issues-5200-gh-5200-a-support-for-resource-server-token-introspection"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6513"&gt;gh-6513&lt;/a&gt; &amp;amp; &lt;a href="https://github.com/spring-projects/spring-security/issues/5200"&gt;gh-5200&lt;/a&gt; - Support for Resource Server Token Introspection&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Resource Server now supports a second OAuth 2.0 token verification strategy: &lt;a href="https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver-opaque"&gt;Token Introspection&lt;/a&gt;. This is handy when a Resource Server wants to or must verify the token remotely.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-5351-gh-5351-a-support-for-resource-server-multi-tenancy-servlet-only"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-5351-gh-5351-a-support-for-resource-server-multi-tenancy-servlet-only"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/5351"&gt;gh-5351&lt;/a&gt; - Support for Resource Server Multi-tenancy (Servlet only)&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;With the introduction of &lt;code&gt;AuthenticationManagerResolver&lt;/code&gt;, initial support for &lt;a href="https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver-multitenancy"&gt;multi-tenant Resource Servers&lt;/a&gt; has arrived.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="core"&gt;&lt;a class="anchor" href="#core"&gt;&lt;/a&gt;Core&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6494-gh-6494-a-converting-key-material-into-code-key-code-instances"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6494-gh-6494-a-converting-key-material-into-code-key-code-instances"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6494"&gt;gh-6494&lt;/a&gt; - Converting key material into &lt;code&gt;Key&lt;/code&gt; instances&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Spring Security 5.2 simplifies converting X.509 and PKCS#8 key material into &lt;code&gt;RSAPublicKey&lt;/code&gt; and &lt;code&gt;RSAPrivateKey&lt;/code&gt; instances by registering &lt;code&gt;Converter&lt;/code&gt; s to the &lt;code&gt;ConversionService&lt;/code&gt; and &lt;code&gt;PropertyEditor&lt;/code&gt; s to the &lt;code&gt;PropertyEditorRegistry&lt;/code&gt;. You can see an example in the &lt;a href="https://github.com/spring-projects/spring-security/blob/master/samples/boot/oauth2resourceserver-static/src/main/java/sample/OAuth2ResourceServerSecurityConfiguration.java#L34"&gt;Resource Server static key sample&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6774-gh-6774-a-support-for-jdk-12"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6774-gh-6774-a-support-for-jdk-12"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6774"&gt;gh-6774&lt;/a&gt; - Support for JDK 12&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6722-gh-6722-a-introducing-code-authenticationmanagerresolver-code"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6722-gh-6722-a-introducing-code-authenticationmanagerresolver-code"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6722"&gt;gh-6722&lt;/a&gt; - Introducing &lt;code&gt;AuthenticationManagerResolver&lt;/code&gt;&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6546-gh-6546-a-introducing-code-currentsecuritycontext-code-for-method-arguments"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6546-gh-6546-a-introducing-code-currentsecuritycontext-code-for-method-arguments"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6546"&gt;gh-6546&lt;/a&gt; - Introducing &lt;code&gt;@CurrentSecurityContext&lt;/code&gt; for method arguments&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Like &lt;code&gt;@AuthenticationPrincipal&lt;/code&gt; before it, &lt;code&gt;@CurrentSecurityContext&lt;/code&gt; works with an argument resolver to retrieve aspects of the &lt;code&gt;SecurityContext&lt;/code&gt;:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre class="prettyprint highlight"&gt;&lt;code class="language-java" data-lang="java"&gt;public String hello(@CurrentSecurityContext
+        SecurityContext context) {
+    return Optional.ofNullable(context.getAuthentication())
+            .map(Authentication::getName).orElse("world");
+}
+
+// or
+
+public String hello(@CurrentSecurityContext
+        (expression="authentication.name") String name) {
+    return Optional.ofNullable(name).orElse("world");
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="web"&gt;&lt;a class="anchor" href="#web"&gt;&lt;/a&gt;Web&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-4187-gh-4187-a-support-for-the-clear-site-data-header"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-4187-gh-4187-a-support-for-the-clear-site-data-header"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/4187"&gt;gh-4187&lt;/a&gt; - Support for the Clear-Site-Data header&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6312-gh-6312-a-support-for-hsts-preload"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6312-gh-6312-a-support-for-hsts-preload"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6312"&gt;gh-6312&lt;/a&gt; - Support for HSTS preload&lt;/h5&gt;
+
+&lt;/div&gt;
+&lt;div class="sect4"&gt;
+&lt;h5 id="a-href-https-github-com-spring-projects-spring-security-issues-6453-gh-6453-a-introducing-code-compositeheaderwriter-code-as-well-as-some-other-a-href-https-github-com-spring-projects-spring-security-issues-6454-header-writing-cleanup-a"&gt;&lt;a class="anchor" href="#a-href-https-github-com-spring-projects-spring-security-issues-6453-gh-6453-a-introducing-code-compositeheaderwriter-code-as-well-as-some-other-a-href-https-github-com-spring-projects-spring-security-issues-6454-header-writing-cleanup-a"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/6453"&gt;gh-6453&lt;/a&gt; - Introducing &lt;code&gt;CompositeHeaderWriter&lt;/code&gt;, as well as some other &lt;a href="https://github.com/spring-projects/spring-security/issues/6454"&gt;header-writing cleanup&lt;/a&gt;.&lt;/h5&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;&lt;a href="http://projects.spring.io/spring-security/"&gt;Project Site&lt;/a&gt; |
+&lt;a href="https://docs.spring.io/spring-security/site/docs/5.2.0.M2/reference/htmlsingle/"&gt;Reference&lt;/a&gt;
+| &lt;a href="http://stackoverflow.com/questions/tagged/spring-security"&gt;Help&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content>
+  </entry>
   <entry>
     <title>Spring Boot 2.2 M2</title>
     <link rel="alternate" href="https://spring.io/blog/2019/04/16/spring-boot-2-2-m2" />
@@ -1053,20 +1166,5 @@ class UserWithDetailsController(
 &lt;p&gt;This is the last release in 2.0 line. Please consider upgrading to Spring Boot 2.1 if you haven&amp;rsquo;t already done so.&lt;/p&gt;&lt;h3&gt;&lt;a href="#how-can-you-help" class="anchor" name="how-can-you-help"&gt;&lt;/a&gt;How can you help?&lt;/h3&gt;
 &lt;p&gt;If you&amp;rsquo;re interested in helping out, check out the &lt;a href="https://github.com/spring-projects/spring-boot/labels/status%3A%20ideal-for-contribution"&gt;&amp;ldquo;ideal for contribution&amp;rdquo; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href="http://stackoverflow.com"&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href="http://stackoverflow.com/tags/spring-boot"&gt;&lt;code&gt;spring-boot&lt;/code&gt; tag&lt;/a&gt; or chat with the community on &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://spring.io/projects/spring-boot/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/htmlsingle"&gt;Documentation&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-boot"&gt;Stack Overflow&lt;/a&gt; | &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Boot 1.5.20 available now</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/04/03/spring-boot-1-5-20-available-now" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Stéphane Nicoll</name>
-    </author>
-    <id>tag:spring.io,2019-04-03:3625</id>
-    <updated>2019-04-03T13:13:00Z</updated>
-    <content type="html">&lt;p&gt;On behalf of the team and everyone who has contributed, I am pleased to announce that Spring Boot 1.5.20 has been released and is now available from &lt;a href="http://repo.spring.io/release"&gt;repo.spring.io&lt;/a&gt; and Maven Central.&lt;/p&gt;
-&lt;p&gt;Spring Boot 1.5.20 is a maintenance release that includes &lt;a href="https://github.com/spring-projects/spring-boot/releases/tag/v1.5.20.RELEASE"&gt;over 30 dependency updates and selected bug fixes&lt;/a&gt;. These upgrades include Spring Security OAuth 2.0.17 which addresses a &lt;a href="https://spring.io/blog/2019/02/21/cve-2019-3778-spring-security-oauth-2-3-5-2-2-4-2-1-4-2-0-17-released"&gt;recently announced CVE&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;If you haven’t already upgraded to Spring Boot 2, please consider doing so as support for 1.x will &lt;a href="https://spring.io/blog/2018/07/30/spring-boot-1-x-eol-aug-1st-2019"&gt;end on August 1st 2019&lt;/a&gt;. &lt;/p&gt;&lt;h3&gt;&lt;a href="#how-can-you-help" class="anchor" name="how-can-you-help"&gt;&lt;/a&gt;How can you help?&lt;/h3&gt;
-&lt;p&gt;If you&amp;rsquo;re interested in helping out, check out the &lt;a href="https://github.com/spring-projects/spring-boot/labels/status%3A%20ideal-for-contribution"&gt;&amp;ldquo;ideal for contribution&amp;rdquo; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href="http://stackoverflow.com"&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href="http://stackoverflow.com/tags/spring-boot"&gt;&lt;code&gt;spring-boot&lt;/code&gt; tag&lt;/a&gt; or chat with the community on &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://spring.io/projects/spring-boot/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://docs.spring.io/spring-boot/docs/1.5.20.RELEASE/reference/htmlsingle"&gt;Documentation&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-boot"&gt;Stack Overflow&lt;/a&gt; | &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
 </feed>
