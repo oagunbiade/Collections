@@ -90,4 +90,14 @@ public class OrganizationServiceImpl implements OrganizationService {
 		return organizationUserRepository.findByUserId(userId);
 	}
 
+	@Override
+	public Long countAll() {
+		return organizationRepository.count();
+	}
+
+	@Override
+	public Long countOrganizationUsers(Long organizationId) {
+		return organizationUserRepository.countByOrganizationId(organizationId);
+	}
+
 }

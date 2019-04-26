@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
  * Created by Toyin on 4/5/19.
  */
 @Entity
-@Table(name = "organization_users", uniqueConstraints=
-        @UniqueConstraint(columnNames={"organization_id", "user_id"}))
-public class OrganizationUser {
+@Table(name = "organization_users")
+public class OrganizationUser implements IEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +19,7 @@ public class OrganizationUser {
     private Organization organization;
     @NotNull
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
     @Column(name="created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

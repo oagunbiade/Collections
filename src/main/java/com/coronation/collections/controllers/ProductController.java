@@ -8,6 +8,7 @@ import com.coronation.collections.repositories.predicate.Operation;
 import com.coronation.collections.security.ProfileDetails;
 import com.coronation.collections.services.MerchantService;
 import com.coronation.collections.services.ProductService;
+import com.coronation.collections.services.impl.DomainSecurityService;
 import com.coronation.collections.util.GenericUtil;
 import com.coronation.collections.util.PageUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -37,24 +40,27 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
     private MerchantService merchantService;
+    private DomainSecurityService domainSecurityService;
 
     @Autowired
-    public ProductController(ProductService productService, MerchantService merchantService) {
+    public ProductController(ProductService productService, MerchantService merchantService,
+                             DomainSecurityService domainSecurityService) {
         this.productService = productService;
         this.merchantService = merchantService;
+        this.domainSecurityService = domainSecurityService;
     }
 
     @PreAuthorize("hasRole('CREATE_PRODUCT')")
-    @PostMapping("/merchants/{merchantId}/accounts/{merchantAccountId}")
+    @PostMapping("/merchants/{merchantId}/accounts/{accountId}")
     public ResponseEntity<Product> create(@PathVariable("merchantId") Long merchantId,
-             @PathVariable("merchantAccountId") Long merchantAccountId, @RequestBody @Valid Product product,
+             @PathVariable("merchantAccountId") Long accountId, @RequestBody @Valid Product product,
           BindingResult bindingResult, @AuthenticationPrincipal ProfileDetails profileDetails) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         } else {
             User user = profileDetails.toUser();
             Merchant merchant = merchantService.findById(merchantId);
-            MerchantAccount account = merchantService.findByAccountId(merchantAccountId);
+            MerchantAccount account = merchantService.findByMerchantAccountId(accountId);
             if (merchant == null || account == null) {
                 return ResponseEntity.notFound().build();
             } else if (account.getDeleted() || account.getAccount().getDeleted()) {
@@ -67,7 +73,9 @@ public class ProductController {
                 }
                 if (merchant.equals(account.getMerchant())) {
                     try {
-                        return ResponseEntity.ok(productService.save(product, merchant, account));
+                        product = productService.save(product, merchant, account);
+                        domainSecurityService.addProductPermissions(product);
+                        return ResponseEntity.ok(product);
                     } catch (DataIntegrityViolationException dve) {
                         return ResponseEntity.status(HttpStatus.CONFLICT).build();
                     }
@@ -110,7 +118,7 @@ public class ProductController {
         @PathVariable("accountId") Long accountId, @AuthenticationPrincipal ProfileDetails profileDetails) {
         User user = profileDetails.toUser();
         Product product = productService.findById(id);
-        MerchantAccount account = merchantService.findByAccountId(accountId);
+        MerchantAccount account = merchantService.findByMerchantAccountId(accountId);
         if (product == null || account == null) {
             return ResponseEntity.notFound().build();
         } else if (account.getDeleted() || account.getAccount().getDeleted()) {
@@ -195,7 +203,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('DELETE_PRODUCT')")
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Product> delete(@PathVariable("id") Long id,
                       @AuthenticationPrincipal ProfileDetails profileDetails) {
         Product product = productService.findById(id);
@@ -209,6 +217,18 @@ public class ProductController {
                 }
             }
             return ResponseEntity.ok(productService.delete(product));
+        }
+    }
+
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
+    @PreAuthorize("hasRole('VIEW_PRODUCTS')")
+    @PostMapping("/{id}")
+    public ResponseEntity<Product> view(@PathVariable("id") Long id) {
+        Product product = productService.findById(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(product);
         }
     }
 
@@ -230,12 +250,14 @@ public class ProductController {
         }
     }
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @PreAuthorize("hasRole('VIEW_PRODUCTS')")
     @GetMapping("/merchants/{id}")
     public ResponseEntity<List<Product>> getMerchantProducts(@PathVariable("id") Long id) {
         return ResponseEntity.ok(productService.findByMerchantId(id));
     }
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @PreAuthorize("hasRole('VIEW_PRODUCTS')")
     @GetMapping("/merchants/{merchantId}/distributors/{distributorId}")
     public ResponseEntity<List<Product>> getDistributorMerchantProducts(@PathVariable("merchantId") Long merchantId,
@@ -243,6 +265,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.merchantDistributorProducts(merchantId, distributorId));
     }
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @PreAuthorize("hasRole('VIEW_PRODUCTS')")
     @GetMapping
     public ResponseEntity<Page<Product>> listProducts(@RequestParam(value="page", required = false, defaultValue = "0") int page,
@@ -268,7 +291,7 @@ public class ProductController {
     }
 
     private boolean isMerchantUser(Merchant merchant, User user) {
-        MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
-        return merchantUser != null && merchantUser.getMerchant().equals(merchant);
+        List<MerchantUser> merchantUsers = merchantService.findByOrganizationUserId(user.getId());
+        return !merchantUsers.isEmpty() && merchantUsers.get(0).getMerchant().equals(merchant);
     }
 }

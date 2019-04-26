@@ -4,10 +4,10 @@
 <title>Coronation Form</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<meta name="viewport"
+<meta email="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<meta name="description" content="">
-<meta name="author" content="">
+<meta email="description" content="">
+<meta email="author" content="">
 
 <link rel="icon" href="https://www.coronationmb.com/favicon.ico"
 	type="image/x-icon">
@@ -95,7 +95,7 @@ body {
 				<div class="user-account">
 					<div class="dropdown">
 						<span>Welcome,</span> <a th:href="@{../javascript:void(0);}"
-							class="dropdown-toggle user-name" data-toggle="dropdown"><strong>Jessica
+							class="dropdown-toggle user-email" data-toggle="dropdown"><strong>Jessica
 								Doe</strong></a>
 						<ul
 							class="dropdown-menu dropdown-menu-right account animated flipInY">
@@ -223,7 +223,7 @@ body {
 									<input type="hidden" th:field="*{productId}" />
 									<div class="form-group">
 										<label>Product Name</label> <input type="text"
-											class="form-control" th:field="*{name}">
+											class="form-control" th:field="*{email}">
 									</div>
 									<div class="form-group">
 										<label>Product Cost</label> <input type="text"
@@ -266,7 +266,7 @@ body {
 	<script src="js/mainscripts.bundle.js"></script>
 	<script>
 		$(function() {
-			// validation needs name of the element
+			// validation needs email of the element
 			$('#food').multiselect();
 
 			// initialize after multiselect

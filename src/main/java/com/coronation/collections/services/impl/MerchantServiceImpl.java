@@ -14,6 +14,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.coronation.collections.repositories.MerchantRepository;
@@ -97,9 +101,10 @@ public class MerchantServiceImpl implements MerchantService {
 		return merchantRepository.saveAndFlush(merchant);
 	}
 
+	@PostAuthorize("hasPermission(returnObject, 'READ')")
 	@Override
-	public MerchantAccount findByAccountId(Long accountId) {
-		return merchantAccountRepository.findByAccountId(accountId);
+	public MerchantAccount findByMerchantAccountId(Long id) {
+		return merchantAccountRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -110,20 +115,22 @@ public class MerchantServiceImpl implements MerchantService {
 		return merchantAccountRepository.saveAndFlush(merchantAccount);
 	}
 
+	@PreAuthorize("hasPermission(#account, 'WRITE')")
 	@Override
-	public MerchantAccount deleteAccount(MerchantAccount merchantAccount) {
+	public MerchantAccount deleteAccount(@Param("account") MerchantAccount merchantAccount) {
 		merchantAccount.setDeleted(Boolean.TRUE);
 		merchantAccount.setModifiedAt(LocalDateTime.now());
 		return merchantAccountRepository.saveAndFlush(merchantAccount);
 	}
 
+	@PostFilter("hasPermission(filterObject, 'READ')")
 	@Override
 	public List<MerchantAccount> merchantAccounts(Long merchantId) {
 		return merchantAccountRepository.findByMerchantId(merchantId);
 	}
 
 	@Override
-	public MerchantUser findByOrganizationUserId(Long userId) {
+	public List<MerchantUser> findByOrganizationUserId(Long userId) {
 		return merchantUserRepository.findByOrganizationUserId(userId);
 	}
 
@@ -141,14 +148,21 @@ public class MerchantServiceImpl implements MerchantService {
 	}
 
 	@Override
+	public List<MerchantUser> findUserMerchants(Long id) {
+		return merchantUserRepository.findByOrganizationUser_UserId(id);
+	}
+
+	@Override
 	public Merchant addAuthenticationDetail(Merchant merchant, AuthenticationDetail authenticationDetail) {
 		merchant.setAuthenticationDetail(authenticationDetail);
 		merchant.setModifiedAt(LocalDateTime.now());
 		return merchantRepository.saveAndFlush(merchant);
 	}
 
+	@PreAuthorize("hasPermission(#account, 'WRITE')")
 	@Override
-	public MerchantAccount approveAccount(MerchantAccount merchantAccount, ApprovalDto approvalDto) {
+	public MerchantAccount approveAccount(@Param("account")MerchantAccount merchantAccount,
+										  ApprovalDto approvalDto) {
 		if (approvalDto.getApprove()) {
 			merchantAccount.getAccount().setStatus(GenericStatus.ACTIVE);
 		} else {
@@ -167,5 +181,20 @@ public class MerchantServiceImpl implements MerchantService {
 		}
 		merchant.setModifiedAt(LocalDateTime.now());
 		return merchantRepository.saveAndFlush(merchant);
+	}
+
+	@Override
+	public Long countAll() {
+		return merchantRepository.count();
+	}
+
+	@Override
+	public Long countByOrganization(Long organizationId) {
+		return merchantRepository.countByOrganizationId(organizationId);
+	}
+
+	@Override
+	public Long countMerchantUsers(Long merchantId) {
+		return merchantUserRepository.countByMerchantId(merchantId);
 	}
 }

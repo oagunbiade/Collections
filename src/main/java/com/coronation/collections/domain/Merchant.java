@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "merchants")
-public class Merchant {
+public class Merchant implements IEntity {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;

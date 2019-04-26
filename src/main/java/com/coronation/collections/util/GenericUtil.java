@@ -2,9 +2,16 @@ package com.coronation.collections.util;
 
 import com.coronation.collections.domain.*;
 import com.coronation.collections.domain.enums.GenericStatus;
+import com.coronation.collections.domain.enums.TaskType;
+import com.coronation.collections.dto.AccessObject;
 import com.coronation.collections.services.DistributorService;
 import com.coronation.collections.services.MerchantService;
 import com.coronation.collections.services.OrganizationService;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Base64Utils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,14 +19,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.UUID;
 
 /**
  * Created by Toyin on 2/3/19.
@@ -95,6 +100,15 @@ public class GenericUtil {
         return email.toLowerCase().endsWith(Constants.STAFF_EMAIL_SUFFIX);
     }
 
+    public static boolean isStaffRole(Role role) {
+        List<String> roles = Arrays.asList("RELATIONSHIP_MGR", "RELATIONSHIP_MGR_SUPERVISOR", "ADMIN");
+        return roles.contains(role.getName());
+    }
+
+    public static boolean isRMUser(Role role) {
+        return role.getName().toUpperCase().contains("RELATIONSHIP_MGR");
+    }
+
     public static String generateRandomId() {
         return UUID.randomUUID().toString();
     }
@@ -135,8 +149,8 @@ public class GenericUtil {
     }
 
     public static boolean isMerchantUser(Merchant merchant, User user, MerchantService merchantService) {
-        MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
-        return merchantUser != null && merchantUser.getMerchant().equals(merchant);
+        List<MerchantUser> merchantUsers = merchantService.findByOrganizationUserId(user.getId());
+        return !merchantUsers.isEmpty() && merchantUsers.get(0).getMerchant().equals(merchant);
     }
 
     public static boolean isOrganizationUser(Organization organization, User user,
@@ -168,6 +182,57 @@ public class GenericUtil {
     public static LocalDateTime dateTimeFromString(String dateStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         return LocalDateTime.parse(dateStr, formatter);
+    }
+
+    public static List<AccessObject> getAccessors(List<MerchantUser> merchantUsers,
+                          List<AccessControlEntry> aclEntries) {
+        Map<String, List<String>> taskMap = new HashMap<>();
+        Map<String, AccessObject> accessMap = new HashMap<>();
+        for (MerchantUser merchantUser: merchantUsers) {
+            User user = merchantUser.getOrganizationUser().getUser();
+            List<String> tasks = new ArrayList<>();
+            for (Task task: user.getRole().getTasks()) {
+                tasks.add("ROLE_" + task.getName().name());
+            }
+            taskMap.put(user.getEmail(), tasks);
+            accessMap.put(user.getEmail(), new AccessObject(user.getId(), user.getEmail(), user.getFirstName(),
+                    user.getLastName()));
+        }
+        List<AccessControlEntry> principalAcls = new ArrayList<>();
+        for (AccessControlEntry entry: aclEntries) {
+            if (entry.getSid() instanceof GrantedAuthoritySid) {
+                GrantedAuthoritySid authority = (GrantedAuthoritySid) entry.getSid();
+                for (Map.Entry<String, List<String>> taskEntry: taskMap.entrySet()) {
+                    if (taskEntry.getValue().contains(authority.getGrantedAuthority())) {
+                        AccessObject accessObject = accessMap.get(authority.getGrantedAuthority());
+                        if (accessObject != null) {
+                            setAccess(accessObject, entry.getPermission(), entry.isGranting());
+                        }
+                    }
+                }
+            } else if (entry.getSid() instanceof PrincipalSid) {
+                principalAcls.add(entry);
+
+            }
+        }
+        principalAcls.forEach(acl -> {
+            PrincipalSid principal = (PrincipalSid) acl.getSid();
+            AccessObject accessObject = accessMap.get(principal.getPrincipal());
+            if (accessObject != null) {
+                setAccess(accessObject, acl.getPermission(), acl.isGranting());
+            }
+        });
+        return new ArrayList<>(accessMap.values());
+    }
+
+    private static void setAccess(AccessObject access, Permission permission, boolean isGranting) {
+        if (permission.getMask() == BasePermission.WRITE.getMask()) {
+            access.setWrite(isGranting);
+        } else if (permission.getMask() == BasePermission.ADMINISTRATION.getMask()) {
+            access.setAdministration(isGranting);
+        } else if (permission.getMask() == BasePermission.READ.getMask()) {
+            access.setRead(isGranting);
+        }
     }
 
     private static final String MERCHANT_ROLE_PREFIX = "MERCHANT";

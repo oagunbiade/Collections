@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "merchant_accounts", uniqueConstraints=
         @UniqueConstraint(columnNames={"merchant_id", "account_id"}))
-public class MerchantAccount {
+public class MerchantAccount implements IEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;

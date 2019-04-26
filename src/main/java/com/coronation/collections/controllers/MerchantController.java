@@ -1,22 +1,37 @@
 package com.coronation.collections.controllers;
 
 import com.coronation.collections.domain.*;
+import com.coronation.collections.domain.enums.GenericStatus;
+import com.coronation.collections.dto.AccountDetailResponse;
 import com.coronation.collections.dto.ApprovalDto;
+import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.exception.DataEncryptionException;
+import com.coronation.collections.repositories.predicate.CustomPredicateBuilder;
+import com.coronation.collections.repositories.predicate.Operation;
 import com.coronation.collections.security.ProfileDetails;
 import com.coronation.collections.services.*;
+import com.coronation.collections.services.impl.DomainSecurityService;
 import com.coronation.collections.util.GenericUtil;
+import com.coronation.collections.util.PageUtil;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Toyin on 4/11/19.
@@ -25,18 +40,23 @@ import java.util.List;
 @RequestMapping("/api/v1/merchants")
 public class MerchantController {
     private MerchantService merchantService;
+    private DistributorService distributorService;
     private AccountService accountService;
     private OrganizationService organizationService;
     private AuthenticationDetailService authenticationDetailService;
+    private DomainSecurityService domainSecurityService;
 
     @Autowired
     public MerchantController(MerchantService merchantService, AccountService accountService,
-              OrganizationService organizationService,
-                          AuthenticationDetailService authenticationDetailService) {
+              OrganizationService organizationService, DistributorService distributorService,
+                          AuthenticationDetailService authenticationDetailService,
+                              DomainSecurityService domainSecurityService) {
         this.merchantService = merchantService;
+        this.distributorService = distributorService;
         this.accountService = accountService;
         this.organizationService = organizationService;
         this.authenticationDetailService = authenticationDetailService;
+        this.domainSecurityService = domainSecurityService;
     }
 
     @PreAuthorize("hasRole('ADD_MERCHANT')")
@@ -74,6 +94,17 @@ public class MerchantController {
                     return ResponseEntity.ok(merchantService.update(previous, merchant));
                 }
             }
+        }
+    }
+
+    @PreAuthorize("hasRole('VIEW_MERCHANTS')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Merchant> view(@PathVariable("id") Long id) {
+        Merchant merchant = merchantService.findById(id);
+        if (merchant == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(merchant);
         }
     }
 
@@ -123,28 +154,30 @@ public class MerchantController {
     }
 
     @PreAuthorize("hasRole('CREATE_ACCOUNT')")
-    @PostMapping("/{id}/accounts")
+    @PostMapping("/{id}/accounts/{accountNumber}")
     public ResponseEntity<MerchantAccount> createAccount(@PathVariable("id") Long id,
-            @RequestBody @Valid Account account, BindingResult bindingResult,
+            @PathVariable("accountNumber") String accountNumber,
             @AuthenticationPrincipal ProfileDetails profileDetails) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+        Merchant merchant = merchantService.findById(id);
+        if (merchant == null) {
+            return ResponseEntity.notFound().build();
         } else {
-            Merchant merchant = merchantService.findById(id);
-            if (merchant == null) {
-                return ResponseEntity.notFound().build();
+            User user = profileDetails.toUser();
+            if (GenericUtil.isMerchantUser(user.getRole()) &&
+                    !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            } else if (accountService.findByAccountNumber(accountNumber) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
-                User user = profileDetails.toUser();
-                if (GenericUtil.isMerchantUser(user.getRole()) &&
-                        !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                } else {
-                    if (accountService.findByAccountNumber(account.getAccountNumber()) == null) {
-                        account = accountService.create(account);
-                        return ResponseEntity.ok(merchantService.addAccount(merchant, account));
-                    } else {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                    }
+                try {
+                    AccountDetailResponse detailResponse = accountService.fetchAccountDetails(accountNumber);
+                    Account account = accountService.create(detailResponse.toAccount());
+                    MerchantAccount merchantAccount = merchantService.addAccount(merchant, account);
+                    domainSecurityService.addMerchantAccountPermissions(merchantAccount);
+                    return ResponseEntity.ok(merchantAccount);
+                } catch (ApiException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
                 }
             }
         }
@@ -159,7 +192,7 @@ public class MerchantController {
             return ResponseEntity.badRequest().build();
         } else {
             User user = profileDetails.toUser();
-            MerchantAccount merchantAccount = merchantService.findByAccountId(id);
+            MerchantAccount merchantAccount = merchantService.findByMerchantAccountId(id);
             if (merchantAccount == null) {
                 return ResponseEntity.notFound().build();
             } else {
@@ -176,7 +209,7 @@ public class MerchantController {
     @PreAuthorize("hasRole('DELETE_ACCOUNT')")
     @DeleteMapping("/accounts/{id}")
     public ResponseEntity<MerchantAccount> deleteAccount(@PathVariable Long id) {
-        MerchantAccount merchantAccount = merchantService.findByAccountId(id);
+        MerchantAccount merchantAccount = merchantService.findByMerchantAccountId(id);
         if (merchantAccount == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -184,6 +217,7 @@ public class MerchantController {
         }
     }
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @PreAuthorize("hasRole('VIEW_ACCOUNTS')")
     @GetMapping("/{id}/accounts")
     public ResponseEntity<List<MerchantAccount>> getAccounts(@PathVariable Long id) {
@@ -207,32 +241,80 @@ public class MerchantController {
             return ResponseEntity.notFound().build();
         } else {
             if (GenericUtil.isMerchantUser(admin.getRole()) &&
-                    !GenericUtil.isMerchantUser(merchant, admin, merchantService)) {
+                    (!GenericUtil.isMerchantUser(merchant, admin, merchantService))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             } else {
-                MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
-                if (merchantUser == null) {
-                    if (merchant.getOrganization().equals(user.getOrganization())) {
+                if (merchant.getOrganization().equals(user.getOrganization()) ||
+                        GenericUtil.isRMUser(user.getUser().getRole())) {
+                    try {
                         return ResponseEntity.ok(merchantService.addUser(user, merchant));
-                    } else {
-                        return ResponseEntity.unprocessableEntity().build();
+                    } catch (DataIntegrityViolationException dte) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
                     }
                 } else {
-                    return  ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    return ResponseEntity.unprocessableEntity().build();
                 }
             }
         }
     }
 
-    @PreAuthorize("hasRole('VIEW_USERS')")
+    @PreAuthorize("hasRole('VIEW_MERCHANT_USERS')")
     @GetMapping("/{id}/users")
-    public ResponseEntity<List<MerchantUser>> getMerchantUsers(@PathVariable("id") Long id) {
+    public ResponseEntity<List<User>> getMerchantUsers(@PathVariable("id") Long id,
+           @AuthenticationPrincipal ProfileDetails profileDetails) {
         Merchant merchant = merchantService.findById(id);
         if (merchant == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(merchantService.findMerchantUsers(id));
+            User user = profileDetails.toUser();
+            if (GenericUtil.isMerchantUser(user.getRole()) &&
+                    !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            List<MerchantUser> merchantUsers = merchantService.findMerchantUsers(id);
+            return ResponseEntity.ok(merchantUsers.stream().
+                map(merchantUser -> merchantUser.getOrganizationUser().getUser()).collect(Collectors.toList()));
         }
+    }
+
+    @PostFilter("hasPermission(filterObject, 'READ')")
+    @PreAuthorize("hasRole('VIEW_DISTRIBUTORS')")
+    @GetMapping("/{id}/distributors")
+    public ResponseEntity<List<MerchantDistributor>> getMerchantDistributors(@PathVariable("id") Long id,
+                           @AuthenticationPrincipal ProfileDetails profileDetails) {
+        Merchant merchant = merchantService.findById(id);
+        if (merchant == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            User user = profileDetails.toUser();
+            if (GenericUtil.isMerchantUser(user.getRole()) &&
+                    !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            return ResponseEntity.ok(distributorService.findByMerchantId(id));
+        }
+    }
+
+    @PreAuthorize("hasRole('VIEW_MERCHANTS')")
+    @GetMapping
+    public ResponseEntity<Page<Merchant>> listMerchants(@RequestParam(value="page",
+            required = false, defaultValue = "0") int page,
+            @RequestParam(value="pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value="name", required = false) String name,
+            @RequestParam(value="phone", required = false) String phone,
+            @RequestParam(value="email", required = false) String email,
+            @RequestParam(value="code", required = false) String code,
+            @RequestParam(value="status", required = false) GenericStatus status) {
+        BooleanExpression filter = new CustomPredicateBuilder<>("merchant", Merchant.class)
+                .with("merchantName", Operation.LIKE, name)
+                .with("merchantCode", Operation.LIKE, code)
+                .with("phone", Operation.LIKE, phone)
+                .with("email", Operation.LIKE, email)
+                .with("status", Operation.ENUM, status).build();
+        Pageable pageRequest =
+                PageUtil.createPageRequest(page, pageSize,
+                        Sort.by(Sort.Order.asc("merchantName")));
+        return ResponseEntity.ok(merchantService.listMerchants(filter, pageRequest));
     }
 
     @PreAuthorize("hasRole('MANAGE_API_KEYS')")
@@ -261,6 +343,15 @@ public class MerchantController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
+    }
+
+    @PreAuthorize("hasRole('VIEW_MERCHANT_USERS')")
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<Merchant>> getUserMerchants(@PathVariable("userId") Long id) {
+        List<MerchantUser> merchantUsers = merchantService.findUserMerchants(id);
+        List<Merchant> merchants = merchantUsers.stream().map(merchantUser -> merchantUser.getMerchant()).
+                collect(Collectors.toList());
+        return ResponseEntity.ok(merchants);
     }
 
     @PreAuthorize("hasRole('MANAGE_API_KEYS')")

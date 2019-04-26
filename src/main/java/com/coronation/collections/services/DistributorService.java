@@ -40,4 +40,7 @@ public interface DistributorService {
     List<DistributorUser> distributorUsers(Long id);
 
     Distributor deactivateOrActivate(Distributor distributor);
+    Long countAll();
+    Long countByOrganization(Long organizationId);
+    Long countByMerchant(Long merchantId);
 }

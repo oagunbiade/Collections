@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product implements IEntity {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
@@ -30,7 +30,7 @@ public class Product {
 	@ManyToOne
 	@JoinColumn(name = "merchant_id")
 	private Merchant merchant;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private MerchantAccount account;
 

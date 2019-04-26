@@ -27,4 +27,7 @@ public interface ProductService {
     Product findByName(String name);
     Product findByCode(String code);
     Product deactivateOrActivate(Product product);
+    Long countAll();
+    Long countByMerchantId(Long merchantId);
+    Long countByOrganizationId(Long organizationId);
 }

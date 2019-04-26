@@ -20,4 +20,6 @@ public interface OrganizationService {
 	OrganizationUser addUser(Organization organization, User user);
 	List<OrganizationUser> organizationUsers(Long id);
 	OrganizationUser findByUserId(Long userId);
+	Long countAll();
+	Long countOrganizationUsers(Long organizationId);
 }

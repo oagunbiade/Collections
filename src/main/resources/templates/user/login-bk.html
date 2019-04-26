@@ -10,7 +10,7 @@
 <div class="container">
 <div class="box-login">
 	<h3>Sign in to your account</h3>
-	<p>Please enter your name and password to log in.</p>
+	<p>Please enter your email and password to log in.</p>
 	<form class="form-login" th:action="@{/processlogin}"
 		th:object="${user}" th:method="POST">
 		<div class="errorHandler alert alert-danger no-display">
@@ -24,7 +24,7 @@
 					<i class="fa fa-user"></i>
 				</span>
 				<!-- To mark the incorrectly filled input, you must add the class "error" to the input -->
-				<!-- example: <input type="text" class="login error" name="login" value="Username" /> -->
+				<!-- example: <input type="text" class="login erremailname="login" value="Username" /> -->
 			</div>
 			<div class="form-group form-actions">
 				<span class="input-icon"> <input type="password"

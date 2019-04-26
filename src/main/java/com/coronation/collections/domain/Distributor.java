@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "distributors")
-public class Distributor {
+public class Distributor implements IEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -43,6 +43,8 @@ public class Distributor {
     private Boolean editMode = Boolean.FALSE;
     @Column(nullable = false)
     private Boolean deleted = Boolean.FALSE;
+    @Transient
+    private String rfpCode;
     @Column(columnDefinition = "TEXT")
     private String rejectReason;
     @Column(columnDefinition = "TEXT")
@@ -52,8 +54,6 @@ public class Distributor {
     @Column(name="modified_at")
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
-    @Transient
-    private String rfpCode;
 
     public Long getId() {
         return id;
@@ -158,8 +158,6 @@ public class Distributor {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
-
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

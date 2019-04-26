@@ -12,4 +12,6 @@ public interface MerchantDistributorRepository extends JpaRepository<MerchantDis
     List<MerchantDistributor> findByMerchantId(Long id);
     MerchantDistributor findByMerchantIdAndDistributorId(Long merchantId, Long distributorId);
     MerchantDistributor findByMerchantIdAndRfpCode(Long merchantId, String rfpCode);
+    Long countByMerchantId(Long merchantId);
+    Long countByMerchantOrganizationId(Long organizationId);
 }

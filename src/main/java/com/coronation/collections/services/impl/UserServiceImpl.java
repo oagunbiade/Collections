@@ -80,8 +80,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByRole(Role role) {
-		return userRepository.findByRoleId(role.getId());
+	public List<User> findByRoleName(String roleName) {
+		return userRepository.findByRoleName(roleName);
 	}
 
 	@Override
@@ -105,5 +105,15 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
 		user.setModifiedAt(LocalDateTime.now());
 		return userRepository.saveAndFlush(user);
+	}
+
+	@Override
+	public List<User> findByParam(String param, Pageable pageable) {
+		return userRepository.findByParam(param.toLowerCase(), pageable);
+	}
+
+	@Override
+	public Long countAll() {
+		return userRepository.count();
 	}
 }

@@ -2,23 +2,29 @@ package com.coronation.collections.controllers;
 
 import com.coronation.collections.domain.*;
 import com.coronation.collections.domain.enums.GenericStatus;
+import com.coronation.collections.dto.AccountDetailResponse;
 import com.coronation.collections.dto.ApprovalDto;
 import com.coronation.collections.dto.StringValue;
+import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.security.ProfileDetails;
 import com.coronation.collections.services.AccountService;
 import com.coronation.collections.services.DistributorService;
 import com.coronation.collections.services.MerchantService;
 import com.coronation.collections.services.UserService;
+import com.coronation.collections.services.impl.DomainSecurityService;
 import com.coronation.collections.util.GenericUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -28,20 +34,23 @@ import java.util.List;
  * Created by Toyin on 4/11/19.
  */
 @RestController
-@RequestMapping("/api/vi/distributors")
+@RequestMapping("/api/v1/distributors")
 public class DistributorController {
     private DistributorService distributorService;
     private MerchantService merchantService;
     private AccountService accountService;
     private UserService userService;
+    private DomainSecurityService domainSecurityService;
 
     @Autowired
     public DistributorController(DistributorService distributorService, MerchantService merchantService,
-                                 AccountService accountService, UserService userService) {
+                                 AccountService accountService, UserService userService,
+                                 DomainSecurityService domainSecurityService) {
         this.distributorService = distributorService;
         this.merchantService = merchantService;
         this.accountService = accountService;
         this.userService = userService;
+        this.domainSecurityService = domainSecurityService;
     }
 
     @Transactional
@@ -100,6 +109,7 @@ public class DistributorController {
     }
 
     @PreAuthorize("hasRole('ADD_MERCHANT_DISTRIBUTOR')")
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @PostMapping("/{id}/merchants/{merchantId}")
     public ResponseEntity<MerchantDistributor> addDistributorToMerchant(@PathVariable("id") Long id,
             @PathVariable("merchantId") Long merchantId, @RequestBody StringValue stringValue,
@@ -114,8 +124,10 @@ public class DistributorController {
                     !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             } else {
-                return ResponseEntity.ok(distributorService.
-                        addToMerchant(distributor, merchant, stringValue.getValue()));
+                MerchantDistributor merchantDistributor = distributorService.
+                        addToMerchant(distributor, merchant, stringValue.getValue());
+                domainSecurityService.addDistributorPermissions(merchantDistributor);
+                return ResponseEntity.ok(merchantDistributor);
             }
         }
     }
@@ -136,6 +148,19 @@ public class DistributorController {
         }
     }
 
+    @PreAuthorize("hasRole('VIEW_DISTRIBUTORS')")
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Distributor> view(@PathVariable("id") Long id) {
+        Distributor distributor = distributorService.findById(id);
+        if (distributor == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(distributor);
+        }
+    }
+
+
     @PreAuthorize("hasRole('EDIT_DISTRIBUTOR')")
     @PutMapping("/merchants/{id}")
     public ResponseEntity<MerchantDistributor> edit(@PathVariable("id") Long id,
@@ -153,6 +178,7 @@ public class DistributorController {
     }
 
     @PreAuthorize("hasRole('DELETE_DISTRIBUTOR')")
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @DeleteMapping("{id}/merchants/{merchantId}")
     public ResponseEntity<MerchantDistributor> delete(@PathVariable("id") Long id,
               @PathVariable("merchantId") Long merchantId,
@@ -201,6 +227,7 @@ public class DistributorController {
     }
 
     @PreAuthorize("hasRole('VIEW_DISTRIBUTORS')")
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @GetMapping("/merchants/{merchantId}/rfp/{rfpCode}")
     public ResponseEntity<MerchantDistributor> findByBvn(@PathVariable("merchantId") Long merchantId,
                              @PathVariable("rfpCode") String rfpCode) {
@@ -213,30 +240,32 @@ public class DistributorController {
     }
 
     @PreAuthorize("hasRole('CREATE_ACCOUNT')")
-    @PostMapping("/{id}/accounts")
+    @PostMapping("/{id}/accounts/{accountNumber}")
     public ResponseEntity<DistributorAccount> createAccount(@PathVariable("id") Long id,
-            @RequestBody @Valid Account account, BindingResult bindingResult,
+            @PathVariable("accountNumber") String accountNumber,
                         @AuthenticationPrincipal ProfileDetails profileDetails) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+        Distributor distributor = distributorService.findById(id);
+        if (distributor == null) {
+            return ResponseEntity.notFound().build();
         } else {
-            Distributor distributor = distributorService.findById(id);
-            if (distributor == null) {
-                return ResponseEntity.notFound().build();
+            User user = profileDetails.toUser();
+            if (GenericUtil.isDistributorUser(user.getRole()) &&
+                    !GenericUtil.isDistributorUser(distributor, user, distributorService)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             } else {
-                User user = profileDetails.toUser();
-                if (GenericUtil.isDistributorUser(user.getRole()) &&
-                        !GenericUtil.isDistributorUser(distributor, user, distributorService)) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                } else {
-                    if (accountService.findByAccountNumber(account.getAccountNumber()) == null) {
-                        account = accountService.create(account);
+                if (accountService.findByAccountNumber(accountNumber) == null) {
+                    try {
+                        AccountDetailResponse detailResponse = accountService.fetchAccountDetails(accountNumber);
+                        Account account = accountService.create(detailResponse.toAccount());
                         List<DistributorAccount> distributorAccounts = distributorService.distributorAccounts(id);
                         return ResponseEntity.ok(distributorService.addAccount(distributor, account,
                                 distributorAccounts.isEmpty()));
-                    } else {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    } catch (ApiException e) {
+                        throw new ResponseStatusException(
+                                HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
                     }
+                } else {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
             }
         }
@@ -292,6 +321,16 @@ public class DistributorController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
             return ResponseEntity.ok(distributorService.addUser(user, distributor));
+        }
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<DistributorUser> getDistributorUser(@PathVariable("userId") Long userId) {
+        DistributorUser distributorUser = distributorService.findByUserId(userId);
+        if (distributorUser != null) {
+            return ResponseEntity.ok(distributorUser);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

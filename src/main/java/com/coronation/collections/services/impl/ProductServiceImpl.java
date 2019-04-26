@@ -14,6 +14,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.coronation.collections.domain.Product;
@@ -47,22 +50,25 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.saveAndFlush(product);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product update(Product prev, Product current) {
+	public Product update(@Param("product")Product prev, Product current) {
 		prev.setEditMode(Boolean.TRUE);
 		prev.setUpdateData(JsonConverter.getJson(current));
 		return productRepository.saveAndFlush(prev);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product updateAccount(Product product, MerchantAccount merchantAccount) {
+	public Product updateAccount(@Param("product") Product product, MerchantAccount merchantAccount) {
 		product.setAccountUpdateData(JsonConverter.getJson(merchantAccount));
 		product.setEditMode(Boolean.TRUE);
 		return productRepository.saveAndFlush(product);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product approveProduct(Product product, ApprovalDto approvalDto) {
+	public Product approveProduct(@Param("product") Product product, ApprovalDto approvalDto) {
 		if (approvalDto.getApprove()) {
 			if (product.getEditMode() && product.getUpdateData() != null) {
 				Product edit = JsonConverter.getElement(product.getUpdateData(), Product.class);
@@ -91,8 +97,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.saveAndFlush(product);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product revert(Product product) {
+	public Product revert(@Param("product")Product product) {
 		product.setEditMode(Boolean.FALSE);
 		product.setUpdateData(null);
 		product.setAccountUpdateData(null);
@@ -100,8 +107,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.saveAndFlush(product);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product approveAccount(Product product, ApprovalDto approvalDto) {
+	public Product approveAccount(@Param("product")Product product, ApprovalDto approvalDto) {
 		if (approvalDto.getApprove()) {
 			if (product.getAccountUpdateData() != null) {
 				MerchantAccount account =
@@ -123,8 +131,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.saveAndFlush(product);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product delete(Product product) {
+	public Product delete(@Param("product")Product product) {
 		product.setDeleted(Boolean.TRUE);
 		product.setModifiedAt(LocalDateTime.now());
 		return productRepository.saveAndFlush(product);
@@ -140,18 +149,21 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findDistributorProducts(merchantId, distributorId);
 	}
 
+	@PostFilter("hasPermission(filterObject, 'READ')")
 	@Override
 	public Product findByName(String name) {
 		return productRepository.findByName(name);
 	}
 
+	@PostFilter("hasPermission(filterObject, 'READ')")
 	@Override
 	public Product findByCode(String code) {
 		return productRepository.findByCode(code);
 	}
 
+	@PreAuthorize("hasPermission(#product, 'WRITE')")
 	@Override
-	public Product deactivateOrActivate(Product product) {
+	public Product deactivateOrActivate(@Param("product")Product product) {
 		if (product.getStatus().equals(GenericStatus.ACTIVE)) {
 			product.setStatus(GenericStatus.DEACTIVATED);
 		} else {
@@ -159,5 +171,20 @@ public class ProductServiceImpl implements ProductService {
 		}
 		product.setModifiedAt(LocalDateTime.now());
 		return productRepository.saveAndFlush(product);
+	}
+
+	@Override
+	public Long countAll() {
+		return productRepository.count();
+	}
+
+	@Override
+	public Long countByMerchantId(Long merchantId) {
+		return productRepository.countByMerchantId(merchantId);
+	}
+
+	@Override
+	public Long countByOrganizationId(Long organizationId) {
+		return productRepository.countByMerchantOrganizationId(organizationId);
 	}
 }

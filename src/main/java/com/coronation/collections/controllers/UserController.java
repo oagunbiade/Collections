@@ -1,6 +1,7 @@
 package com.coronation.collections.controllers;
 
 import com.coronation.collections.domain.MerchantUser;
+import com.coronation.collections.domain.Organization;
 import com.coronation.collections.domain.Role;
 import com.coronation.collections.domain.User;
 import com.coronation.collections.dto.PasswordDto;
@@ -8,14 +9,17 @@ import com.coronation.collections.repositories.predicate.CustomPredicateBuilder;
 import com.coronation.collections.repositories.predicate.Operation;
 import com.coronation.collections.security.ProfileDetails;
 import com.coronation.collections.services.MerchantService;
+import com.coronation.collections.services.OrganizationService;
 import com.coronation.collections.services.RoleService;
 import com.coronation.collections.services.UserService;
+import com.coronation.collections.util.Constants;
 import com.coronation.collections.util.GenericUtil;
 import com.coronation.collections.util.PageUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -27,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by Toyin on 4/11/19.
@@ -37,45 +42,55 @@ public class UserController {
     private UserService userService;
     private RoleService roleService;
     private MerchantService merchantService;
+    private OrganizationService organizationService;
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(UserService userService, RoleService roleService,
+                          OrganizationService organizationService,
                           BCryptPasswordEncoder passwordEncoder, MerchantService merchantService) {
         this.userService = userService;
         this.roleService = roleService;
         this.merchantService = merchantService;
+        this.organizationService = organizationService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasRole('CREATE_USER')")
-    @PostMapping("/roles/{roleId}")
-    public ResponseEntity<User> register(@PathVariable("roleId") Long roleId,
-             @RequestBody @Valid User user, BindingResult bindingResult,
+    @PostMapping("/roles/{name}")
+    public ResponseEntity<User> register(@PathVariable("name") String roleName,
+            @RequestBody @Valid User user, BindingResult bindingResult,
                  @AuthenticationPrincipal ProfileDetails profileDetails) {
         User admin = profileDetails.toUser();
-        Role role = roleService.findById(roleId);
+
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
-        } else if (role == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else if (userService.findByEmail(user.getEmail()) != null ||
-                userService.findByPhone(user.getPhone()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else if (GenericUtil.isMerchantUser(admin.getRole()) &&
-                !GenericUtil.isMerchantUser(role)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            String password = null;
-            if (GenericUtil.isStaffEmail(user.getEmail())) {
-                user.setPassword(user.getEmail());
+            Role role = roleService.findByName(roleName);
+            if (role == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            } else if (userService.findByEmail(user.getEmail()) != null ||
+                    userService.findByPhone(user.getPhone()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            } else if ((GenericUtil.isMerchantUser(admin.getRole())) &&
+                    !GenericUtil.isMerchantUser(role)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             } else {
-                password = GenericUtil.generateRandomString(8);
-                user.setPassword(password);
+                String password = null;
+                if (GenericUtil.isStaffEmail(user.getEmail())) {
+                    user.setPassword(user.getEmail());
+                } else {
+                    password = GenericUtil.generateRandomString(8);
+                    user.setPassword(password);
+                }
+                user.setRole(role);
+                user = userService.save(user);
+                if (GenericUtil.isStaffEmail(user.getEmail())) {
+                    Organization organization = organizationService.findByName(Constants.DEFAULT_BANK_NAME);
+                    organizationService.addUser(organization, user);
+                }
+                return ResponseEntity.ok(user);
             }
-            user.setRole(role);
-            user = userService.save(user);
-            return ResponseEntity.ok(user);
         }
     }
 
@@ -196,10 +211,30 @@ public class UserController {
         return ResponseEntity.ok(userService.listAll(filter, pageRequest));
     }
 
+    @PreAuthorize("hasRole('VIEW_USERS')")
+    @GetMapping(value = "/params")
+    public ResponseEntity<List<User>> findByParams(@RequestParam(value = "q", required = false) String q){
+        if (q == null) {
+            q = "";
+        }
+        return ResponseEntity.ok(userService.findByParam(q, PageRequest.of(0, 10)));
+    }
+
+    @GetMapping(value = "/me")
+    public ResponseEntity<User> getUserInSession(@AuthenticationPrincipal ProfileDetails profileDetails){
+        return ResponseEntity.ok(profileDetails.toUser());
+    }
+
+    @GetMapping(value = "/roles/{roleName}")
+    public ResponseEntity<List<User>> getByRole(@PathVariable("roleName") String roleName) {
+        return ResponseEntity.ok(userService.findByRoleName(roleName));
+    }
+
     private boolean isMerchantUserAdmin(User admin, User user) {
-        MerchantUser merchantUserAdmin = merchantService.findByOrganizationUserId(admin.getId());
-        MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
-        return (merchantUserAdmin != null && merchantUser != null && GenericUtil.isMerchantUser(user.getRole()) &&
-                merchantUserAdmin.getMerchant().equals(merchantUser.getMerchant()));
+        List<MerchantUser> merchantAdminUsers = merchantService.findByOrganizationUserId(admin.getId());
+        List<MerchantUser> merchantUsers = merchantService.findByOrganizationUserId(user.getId());
+        return (!merchantAdminUsers.isEmpty() && !merchantUsers.isEmpty()
+            && GenericUtil.isMerchantUser(user.getRole()) &&
+                merchantAdminUsers.get(0).getMerchant().equals(merchantUsers.get(0).getMerchant()));
     }
 }

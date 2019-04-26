@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "merchant_users", uniqueConstraints=
         @UniqueConstraint(columnNames={"organization_users_id", "merchant_id"}))
-public class MerchantUser {
+public class MerchantUser implements IEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "organization_users_id")
     private OrganizationUser organizationUser;
     @ManyToOne

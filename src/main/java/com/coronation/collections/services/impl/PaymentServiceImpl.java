@@ -192,6 +192,16 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
+	public void setOrganizationAmountReport(Long organizationId, PaymentReport paymentReport) {
+		sumPayments(paymentRepository.findByMerchantOrganizationId(organizationId), paymentReport);
+	}
+
+	@Override
+	public void setAllAmountReport(PaymentReport paymentReport) {
+		sumPayments(paymentRepository.findAll(), paymentReport);
+	}
+
+	@Override
 	public List<Payment> findMerchantDuePayments(Long merchantId, LocalDateTime from, LocalDateTime to) {
 		return paymentRepository.findMerchantDuePayments(merchantId, from, to);
 	}
@@ -200,6 +210,11 @@ public class PaymentServiceImpl implements PaymentService {
 	public List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId,
 													LocalDateTime from, LocalDateTime to) {
 		return paymentRepository.findDistributorDuePayments(merchantId, distributorId, from, to);
+	}
+
+	@Override
+	public Page<InvalidPayment> merchantInvalidPayments(Long merchantId, Pageable pageable) {
+		return invalidPaymentRepository.findByMerchantIdAndValidatedFalse(merchantId, pageable);
 	}
 
 	@Override
@@ -349,11 +364,6 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public List<InvalidPayment> merchantInvalidPayments(Long merchantId) {
-		return invalidPaymentRepository.findByMerchantIdAndValidatedFalse(merchantId);
-	}
-
-	@Override
 	public TransferResponse transfer(TransferRequest transferRequest) throws ApiException {
 		ResponseEntity<TransferResponse> response = utilities.postTransfer(transferRequest);
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -368,6 +378,16 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public List<Payment> findMerchantDistributorPayments(Long merchantId, Long distributorId) {
 		return paymentRepository.findByDistributorIdAndMerchantId(distributorId, merchantId);
+	}
+
+	@Override
+	public Page<Payment> merchantPayments(Long merchantId, Pageable pageable) {
+		return paymentRepository.findByMerchantId(merchantId, pageable);
+	}
+
+	@Override
+	public Page<Payment> distributorPayments(Long distributorId, Pageable pageable) {
+		return paymentRepository.findByDistributorId(distributorId, pageable);
 	}
 
 	@Override

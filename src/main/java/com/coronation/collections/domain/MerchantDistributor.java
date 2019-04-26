@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "merchant_distributors", uniqueConstraints={
                     @UniqueConstraint(columnNames={"merchant_id", "distributor_id"}),
         @UniqueConstraint(columnNames={"merchant_id", "rfp_code"})})
-public class MerchantDistributor {
+public class MerchantDistributor implements IEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;

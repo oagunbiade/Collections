@@ -9,6 +9,7 @@ import com.coronation.collections.dto.ApprovalDto;
 import com.coronation.collections.exception.ApiException;
 import com.coronation.collections.repositories.AccountRepository;
 import com.coronation.collections.services.AccountService;
+import com.coronation.collections.util.Constants;
 import com.coronation.collections.util.JsonConverter;
 import com.coronation.collections.util.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,8 +94,12 @@ public class AccountServiceImpl implements AccountService {
             ApiException exception = new ApiException("An error occurred while fetching account");
             exception.setStatusCode(response.getStatusCode().value());
             throw exception;
-        } else {
+        } else if (response.getBody().equals(Constants.ACCOUNT_RESPONSE_CODE)) {
             return response.getBody();
+        } else {
+            ApiException exception = new ApiException("Account was not found");
+            exception.setStatusCode(HttpStatus.NOT_FOUND.value());
+            throw exception;
         }
     }
 }

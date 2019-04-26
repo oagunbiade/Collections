@@ -18,8 +18,10 @@ public interface UserService {
     User update(User prev, User current);
     User delete(User user);
 	User assignRole(User user, Role role);
-	List<User> findByRole(Role role);
+	List<User> findByRoleName(String roleName);
 	User uploadImage(User user, byte[] image);
 	String resetPassword(User user);
 	User changePassword(User user, PasswordDto passwordDto);
+	List<User> findByParam(String param, Pageable pageable);
+	Long countAll();
 }

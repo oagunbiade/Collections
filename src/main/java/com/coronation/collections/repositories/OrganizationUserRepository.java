@@ -13,4 +13,5 @@ public interface OrganizationUserRepository extends JpaRepository<OrganizationUs
         QuerydslPredicateExecutor<OrganizationUser> {
     List<OrganizationUser> findByOrganizationId(Long id);
     OrganizationUser findByUserId(Long id);
+    Long countByOrganizationId(Long organizationId);
 }

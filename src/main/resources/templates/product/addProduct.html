@@ -5,10 +5,10 @@
 <title>Coronation :: Home</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<meta name="viewport"
+<meta email="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<meta name="description" content="">
-<meta name="author" content="">
+<meta email="description" content="">
+<meta email="author" content="">
 
 <link rel="icon" href="https://www.coronationmb.com/favicon.ico"
 	type="image/x-icon">
@@ -94,7 +94,7 @@ body {
 				<div class="user-account">
 					<div class="dropdown">
 						<span>Welcome,</span> <a th:href="@{javascript:void(0);}"
-							class="dropdown-toggle user-name" data-toggle="dropdown"><strong
+							class="dropdown-toggle user-email" data-toggle="dropdown"><strong
 							th:text="${user.userProfile.firstName}"></strong></a>
 						<ul
 							class="dropdown-menu dropdown-menu-right account animated flipInY">
@@ -328,7 +328,7 @@ body {
 								<input type="hidden" th:field="*{organizationId}" />
 								<div class="form-group">
 									<label>Organization Name</label> <input type="text"
-										class="form-control" th:field="*{name}">
+										class="form-control" th:field="*{email}">
 								</div>
 
 							</div>
@@ -374,7 +374,7 @@ body {
 								<tr th:each="organization : ${organizations}">
 									<td th:text="${organization.organizationId}"><a
 										href="/organization/${organization.organizationId}">Id</a></td>
-									<td th:text="${organization.name}">Merchant Name</td>
+									<td th:text="${organization.email}">Merchant Name</td>
 									<td th:text="${organization.createdDate}">Created Date</td>
 									<td th:text="${organization.createdBy}">Created By</td>
 									<td><a

@@ -12,6 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
         QuerydslPredicateExecutor<Product> {
 	List<Product> findByMerchantId(Long id);
 	Long countByMerchantId(Long id);
+	Long countByMerchantOrganizationId(Long organizationId);
     @Query("select distinct p.product from Payment p where p.merchant.id = ?1 and p.distributor.id = ?2")
     List<Product> findDistributorProducts(Long merchantId, Long distributorId);
     Product findByCode(String code);

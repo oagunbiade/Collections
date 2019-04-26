@@ -37,12 +37,17 @@ public interface PaymentService {
     void setMerchantAmountReport(Long merchantId, PaymentReport paymentReport);
     void setDistributorAmountReport
             (Long distributorId, PaymentReport paymentReport);
+    void setOrganizationAmountReport
+            (Long organizationId, PaymentReport paymentReport);
+    void setAllAmountReport
+            (PaymentReport paymentReport);
     List<Payment> findMerchantDuePayments(Long merchantId, LocalDateTime from, LocalDateTime to);
     List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId, LocalDateTime from, LocalDateTime to);
-    List<InvalidPayment> merchantInvalidPayments(Long merchantId);
+    Page<InvalidPayment> merchantInvalidPayments(Long merchantId, Pageable pageable);
     TransferResponse transfer(TransferRequest transferRequest) throws ApiException;
     List<Payment> findMerchantDistributorPayments(Long merchantId, Long distributorId);
-
+    Page<Payment> merchantPayments(Long merchantId, Pageable pageable);
+    Page<Payment> distributorPayments(Long distributorId, Pageable pageable);
     void sumPayments(List<Payment> payments,
                             final PaymentReport paymentReport);
 }

@@ -8,10 +8,7 @@ import com.coronation.collections.exception.InvalidDataException;
 import com.coronation.collections.repositories.predicate.CustomPredicateBuilder;
 import com.coronation.collections.repositories.predicate.Operation;
 import com.coronation.collections.security.ProfileDetails;
-import com.coronation.collections.services.DistributorService;
-import com.coronation.collections.services.MerchantService;
-import com.coronation.collections.services.PaymentService;
-import com.coronation.collections.services.ProductService;
+import com.coronation.collections.services.*;
 import com.coronation.collections.util.GenericUtil;
 import com.coronation.collections.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,20 +35,23 @@ import java.util.List;
  * Created by Toyin on 4/11/19.
  */
 @RestController
-@RequestMapping("/api/vi/payments")
+@RequestMapping("/api/v1/payments")
 public class PaymentController {
     private PaymentService paymentService;
     private ProductService productService;
     private DistributorService distributorService;
     private MerchantService merchantService;
+    private OrganizationService organizationService;
 
     @Autowired
     public PaymentController(PaymentService paymentService, ProductService productService,
-                 MerchantService merchantService, DistributorService distributorService) {
+                 MerchantService merchantService, DistributorService distributorService,
+                             OrganizationService organizationService) {
         this.paymentService = paymentService;
         this.productService = productService;
         this.distributorService = distributorService;
         this.merchantService = merchantService;
+        this.organizationService = organizationService;
     }
 
     @PreAuthorize("hasRole('INITIATE_PAYMENT')")
@@ -311,8 +311,8 @@ public class PaymentController {
 
     @PreAuthorize("hasRole('VIEW_PAYMENTS')")
     @GetMapping("/merchants/{merchantId}/invalid")
-    public ResponseEntity<InvalidPayment> invalidPayments(@PathVariable("merchantId") Long merchantId,
-                                            @AuthenticationPrincipal ProfileDetails profileDetails) {
+    public ResponseEntity<Page<InvalidPayment>> invalidPayments(@PathVariable("merchantId") Long merchantId,
+          @RequestParam(value="page", required = false, defaultValue = "0") int page, @AuthenticationPrincipal ProfileDetails profileDetails) {
         User user = profileDetails.toUser();
         Merchant merchant = merchantService.findById(merchantId);
         if (merchant == null) {
@@ -321,7 +321,8 @@ public class PaymentController {
                 !GenericUtil.isMerchantUser(merchant, user, merchantService)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            return ResponseEntity.ok(paymentService.findInvalidPaymentById(merchantId));
+            return ResponseEntity.ok(paymentService.merchantInvalidPayments(merchantId,
+                    PageUtil.createPageRequest(page, Sort.by(Sort.Order.desc("dueDate")))));
         }
     }
 
@@ -343,6 +344,38 @@ public class PaymentController {
                 throw new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while processing file", e);
             }
+        }
+    }
+
+    @PreAuthorize("hasRole('VIEW_REPORTS')")
+    @GetMapping("/reports")
+    public ResponseEntity<PaymentReport> getAllReport(
+                           @AuthenticationPrincipal ProfileDetails profileDetails) {
+        User user = profileDetails.toUser();
+        if (!GenericUtil.isStaffRole(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            PaymentReport paymentReport = new PaymentReport();
+            paymentService.setAllAmountReport(paymentReport);
+            return ResponseEntity.ok(paymentReport);
+        }
+    }
+
+    @PreAuthorize("hasRole('VIEW_REPORTS')")
+    @GetMapping("/organizations/{organizationId}/reports")
+    public ResponseEntity<PaymentReport> getOrganizationReport(@PathVariable("organizationId") Long organizationId,
+                       @AuthenticationPrincipal ProfileDetails profileDetails) {
+        User user = profileDetails.toUser();
+        Organization organization = organizationService.findById(organizationId);
+        if (organization == null) {
+            return ResponseEntity.notFound().build();
+        } else if (GenericUtil.isMerchantUser(user.getRole()) &&
+                !GenericUtil.isOrganizationUser(organization, user, organizationService)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            PaymentReport paymentReport = new PaymentReport();
+            paymentService.setOrganizationAmountReport(organizationId, paymentReport);
+            return ResponseEntity.ok(paymentReport);
         }
     }
 
@@ -436,13 +469,13 @@ public class PaymentController {
                     distributorUser.getDistributor().getBvn())
                     .with("merchant.merchantName", Operation.LIKE, merchantName)
                     .with("merchant.merchantCode", Operation.LIKE, merchantCode);
-        } else if (GenericUtil.isMerchantUser(user.getRole())) {
-            MerchantUser merchantUser = merchantService.findByOrganizationUserId(user.getId());
-            if (merchantUser == null) {
+        } else if (GenericUtil.isMerchantUser(user.getRole()) || GenericUtil.isRMUser(user.getRole())) {
+            List<MerchantUser> merchantUsers = merchantService.findByOrganizationUserId(user.getId());
+            if (merchantUsers.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             builder.with("merchant.merchantCode", Operation.STRING_EQUALS,
-                    merchantUser.getMerchant().getMerchantCode())
+                    merchantUsers.get(0).getMerchant().getMerchantCode())
                     .with("distributor.name", Operation.LIKE, distributorName)
                     .with("distributor.bvn", Operation.LIKE, distributorBvn);
         } else {

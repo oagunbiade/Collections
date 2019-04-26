@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "distributor_users", uniqueConstraints=
     @UniqueConstraint(columnNames={"user_id", "distributor_id"}))
-public class DistributorUser {
+public class DistributorUser implements IEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;

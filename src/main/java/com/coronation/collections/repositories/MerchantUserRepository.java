@@ -12,5 +12,7 @@ import java.util.List;
 public interface MerchantUserRepository extends JpaRepository<MerchantUser, Long>,
         QuerydslPredicateExecutor<MerchantUser> {
     List<MerchantUser> findByMerchantId(Long id);
-    MerchantUser findByOrganizationUserId(Long userId);
+    List<MerchantUser> findByOrganizationUser_UserId(Long userId);
+    List<MerchantUser> findByOrganizationUserId(Long userId);
+    Long countByMerchantId(Long merchantId);
 }

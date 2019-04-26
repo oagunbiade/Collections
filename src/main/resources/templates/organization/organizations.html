@@ -22,7 +22,7 @@
             </tr>
             <tr th:each="organization : ${organizations}">
                 <td th:text="${organization.organizationId}"><a href="/organization/${organization.organizationId}">Id</a></td>
-                <td th:text="${organization.name}">Merchant Name</td>
+                <td th:text="${organization.email}">Merchant Name</td>
                 <td th:text="${organization.createdDate}">Created Date</td>
                 <td th:text="${organization.createdBy}">Created By</td>
                 <td><a th:href="${'/organization/' + organization.organizationId}">View</a></td>

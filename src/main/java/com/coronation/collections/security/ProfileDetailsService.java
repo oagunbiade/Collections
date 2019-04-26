@@ -1,7 +1,5 @@
 package com.coronation.collections.security;
 
-import com.coronation.collections.domain.Role;
-import com.coronation.collections.domain.Task;
 import com.coronation.collections.domain.User;
 import com.coronation.collections.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

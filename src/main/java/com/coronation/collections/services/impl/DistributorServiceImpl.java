@@ -3,7 +3,7 @@ package com.coronation.collections.services.impl;
 import com.coronation.collections.domain.*;
 import com.coronation.collections.domain.enums.GenericStatus;
 import com.coronation.collections.dto.ApprovalDto;
-import com.coronation.collections.dto.StringValue;
+import org.springframework.data.repository.query.Param;
 import com.coronation.collections.repositories.DistributorAccountRepository;
 import com.coronation.collections.repositories.DistributorRepository;
 import com.coronation.collections.repositories.DistributorUserRepository;
@@ -11,6 +11,9 @@ import com.coronation.collections.repositories.MerchantDistributorRepository;
 import com.coronation.collections.services.DistributorService;
 import com.coronation.collections.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -84,14 +87,18 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
-    public MerchantDistributor deleteDistributor(MerchantDistributor merchantDistributor) {
+    @PreAuthorize("hasPermission(#merchantDistributor, 'WRITE')")
+    public MerchantDistributor deleteDistributor(@Param("merchantDistributor")
+                                 MerchantDistributor merchantDistributor) {
         merchantDistributor.setDeleted(Boolean.TRUE);
         merchantDistributor.setModifiedAt(LocalDateTime.now());
         return merchantDistributorRepository.saveAndFlush(merchantDistributor);
     }
 
     @Override
-    public MerchantDistributor approveMerchantDistributor(MerchantDistributor merchantDistributor, ApprovalDto approvalDto) {
+    @PreAuthorize("hasPermission(#merchantDistributor, 'WRITE')")
+    public MerchantDistributor approveMerchantDistributor(@Param("merchantDistributor")
+                  MerchantDistributor merchantDistributor, ApprovalDto approvalDto) {
         if (approvalDto.getApprove()) {
             if (merchantDistributor.getEditMode() && merchantDistributor.getUpdateData() != null) {
                 MerchantDistributor edit = JsonConverter.getElement
@@ -116,13 +123,16 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
-    public MerchantDistributor editMerchantDistributor(MerchantDistributor prev, MerchantDistributor current) {
+    @PreAuthorize("hasPermission(#merchantDistributor, 'WRITE')")
+    public MerchantDistributor editMerchantDistributor(@Param("merchantDistributor")
+                                   MerchantDistributor prev, MerchantDistributor current) {
         prev.setEditMode(Boolean.TRUE);
         prev.setUpdateData(JsonConverter.getJson(current));
         return merchantDistributorRepository.saveAndFlush(prev);
     }
 
     @Override
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     public MerchantDistributor findByMerchantDistributorId(Long id) {
         return merchantDistributorRepository.findById(id).orElse(null);
     }
@@ -187,6 +197,7 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     public MerchantDistributor findByMerchantIdAndDistributorId(Long merchantId, Long distributorId) {
         return merchantDistributorRepository.findByMerchantIdAndDistributorId(merchantId, distributorId);
     }
@@ -208,11 +219,13 @@ public class DistributorServiceImpl implements DistributorService {
     }
 
     @Override
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     public MerchantDistributor findByMerchantIdAndRfpCode(Long merchantId, String rfpCode) {
         return merchantDistributorRepository.findByMerchantIdAndRfpCode(merchantId, rfpCode);
     }
 
     @Override
+    @PostFilter("hasPermission(filterObject, 'READ')")
     public List<MerchantDistributor> findByMerchantId(Long id) {
         return merchantDistributorRepository.findByMerchantId(id);
     }
@@ -238,4 +251,18 @@ public class DistributorServiceImpl implements DistributorService {
         return distributorRepository.saveAndFlush(distributor);
     }
 
+    @Override
+    public Long countAll() {
+        return distributorRepository.count();
+    }
+
+    @Override
+    public Long countByOrganization(Long organizationId) {
+        return merchantDistributorRepository.countByMerchantOrganizationId(organizationId);
+    }
+
+    @Override
+    public Long countByMerchant(Long merchantId) {
+        return merchantDistributorRepository.countByMerchantId(merchantId);
+    }
 }

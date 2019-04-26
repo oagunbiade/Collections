@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Organizations")
-public class Organization implements Serializable{
+public class Organization implements IEntity {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
@@ -20,6 +20,13 @@ public class Organization implements Serializable{
 	@NotNull
 	@Column(name = "name", unique = true)
 	private String name;
+
+	@NotNull
+	@Column(unique = true)
+	private String email;
+
+	@Column
+	private String address;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -48,6 +55,22 @@ public class Organization implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public Boolean getDeleted() {

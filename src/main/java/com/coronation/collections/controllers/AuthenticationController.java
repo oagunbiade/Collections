@@ -28,7 +28,7 @@ public class AuthenticationController {
     private TokenProvider jwtTokenUtil;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    public ResponseEntity<?> login(@RequestBody LoginUser loginUser) throws AuthenticationException {
         if (GenericUtil.isStaffEmail(loginUser.getUsername())) {
             if (staffAuthenticated(loginUser)) {
                 loginUser.setPassword(loginUser.getUsername());

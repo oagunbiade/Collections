@@ -3,6 +3,8 @@ package com.coronation.collections.repositories;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -25,11 +27,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>,
 	List<Payment> findMerchantDuePayments(Long merchantId, LocalDateTime from, LocalDateTime to);
 
 	@Query(value = "SELECT p FROM Payment p WHERE p.merchant.id = ?1 and p.distributor.id = ?2" +
-			" and p.status <> 'PROCESSED' " +
+			" and p.status <> 'PROCESSED' " + "and p.status <> 'CANCELED' and p.status <> 'REJECTED'" +
 			"and p.dueDate between ?3 and ?4")
 	List<Payment> findDistributorDuePayments(Long merchantId, Long distributorId,
 											 LocalDateTime from, LocalDateTime to);
 	List<Payment> findByMerchantId(Long id);
 	List<Payment> findByDistributorId(Long id);
+	List<Payment> findByMerchantOrganizationId(Long id);
+	Page<Payment> findByMerchantId(Long id, Pageable pageable);
+	Page<Payment> findByDistributorId(Long id, Pageable pageable);
 	List<Payment> findByDistributorIdAndMerchantId(Long distributorId, Long merchantId);
 }
